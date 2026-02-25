@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 
-from ..services.scoring import calculate_readiness_score
-from ..services.burnout import predictor
-from ..services.placement import predict_placement_probability
-from ..services.report import generate_accreditation_report
+from app.services.scoring import calculate_readiness_score
+from app.services.burnout import predictor
+from app.services.placement import predict_placement_probability
+from app.services.report import generate_accreditation_report
 
 router = APIRouter()
 

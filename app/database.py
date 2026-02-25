@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from .core.config import settings
+from app.core.config import settings
 
 # Supabase requires special connection arguments depending on if it's Serverless/Pooler or not.
 # pool_pre_ping=True helps with persistent connections to Supabase.

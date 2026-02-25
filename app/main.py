@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .core.config import settings
-from .routers import auth, students, predictions
-from .database import engine
-from . import models
+from app.core.config import settings
+from app.routers import auth, students, predictions
+from app.database import engine
+from app import models
 
 # Avoid creating tables here automatically if making schema files to run via Supabase SQL Editor manually, 
 # but models.Base.metadata.create_all(bind=engine) can be used for local SQLite. 

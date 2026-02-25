@@ -17,14 +17,19 @@ app = FastAPI(
 )
 
 # Set all CORS enabled origins
+origins = ["http://localhost:3000", "http://localhost:5173"]
 if settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.BACKEND_CORS_ORIGINS,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    for origin in settings.BACKEND_CORS_ORIGINS:
+        if origin not in origins:
+            origins.append(origin)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(students.router, prefix="/api/v1/students", tags=["students"])

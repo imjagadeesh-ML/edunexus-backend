@@ -34,8 +34,8 @@ app.include_router(predictions.router, prefix="/api/v1/predictions", tags=["pred
 def root():
     return {
         "message": "Welcome to EduNexus AI API",
-        "version": "1.0.1",
-        "deploy_time": "2026-02-26T00:15:00Z"
+        "version": "1.0.2",
+        "deploy_time": "2026-02-26T00:35:00Z"
     }
 
 @app.get("/api/v1/test-cors")

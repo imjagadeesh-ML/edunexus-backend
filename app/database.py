@@ -4,8 +4,13 @@ from app.core.config import settings
 
 # Supabase requires special connection arguments depending on if it's Serverless/Pooler or not.
 # pool_pre_ping=True helps with persistent connections to Supabase.
+connect_args = {}
+if "supabase.co" in settings.DATABASE_URL:
+    connect_args = {"sslmode": "require"}
+
 engine = create_engine(
     settings.DATABASE_URL,
+    connect_args=connect_args,
     pool_pre_ping=True,
     pool_size=10,
     max_overflow=20

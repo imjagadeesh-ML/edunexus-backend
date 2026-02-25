@@ -34,13 +34,22 @@ app.include_router(predictions.router, prefix="/api/v1/predictions", tags=["pred
 def root():
     return {
         "message": "Welcome to EduNexus AI API",
-        "version": "1.0.2",
-        "deploy_time": "2026-02-26T00:35:00Z"
+        "version": "1.0.3",
+        "deploy_time": "2026-02-26T00:50:00Z"
     }
 
 @app.get("/api/v1/test-cors")
 def test_cors():
-    return {"message": "CORS is working!"}
+    return {"message": "CORS is working!", "time": "2026-02-26T00:50:00Z"}
+
+@app.get("/api/v1/test-db-raw")
+def test_db_raw(db: Session = Depends(get_db)):
+    from sqlalchemy import text
+    try:
+        result = db.execute(text("SELECT email FROM students LIMIT 1")).fetchone()
+        return {"status": "success", "first_email": result[0] if result else "None"}
+    except Exception as e:
+        return {"status": "error", "error": str(e), "type": str(type(e))}
 
 @app.get("/api/v1/debug-students")
 def debug_students(db: Session = Depends(get_db)):

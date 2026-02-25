@@ -38,7 +38,14 @@ def root():
         "deploy_time": "2026-02-26T00:15:00Z"
     }
 
+@app.get("/api/v1/test-cors")
+def test_cors():
+    return {"message": "CORS is working!"}
+
 @app.get("/api/v1/debug-students")
 def debug_students(db: Session = Depends(get_db)):
-    students = db.query(models.Student).all()
-    return [{"id": s.id, "email": s.email, "has_hash": bool(s.hashed_password)} for s in students]
+    try:
+        students = db.query(models.Student).all()
+        return [{"id": s.id, "email": s.email, "has_hash": bool(s.hashed_password)} for s in students]
+    except Exception as e:
+        return {"error": str(e), "type": str(type(e))}

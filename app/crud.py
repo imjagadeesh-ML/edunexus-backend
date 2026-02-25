@@ -44,3 +44,9 @@ def create_mark(db: Session, mark: schemas.MarkCreate):
     db.commit()
     db.refresh(db_mark)
     return db_mark
+
+def get_readiness_score(db: Session, student_id: int):
+    return db.query(models.ReadinessScore).filter(models.ReadinessScore.student_id == student_id).first()
+
+def get_placement_prediction(db: Session, student_id: int):
+    return db.query(models.PlacementPrediction).filter(models.PlacementPrediction.student_id == student_id).first()

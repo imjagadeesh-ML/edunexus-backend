@@ -1,9 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.routers import auth, students, predictions
-from app.database import engine
+from app.database import engine, get_db
 from app import models
 
 # Avoid creating tables here automatically if making schema files to run via Supabase SQL Editor manually, 

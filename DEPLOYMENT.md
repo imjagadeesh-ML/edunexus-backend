@@ -4,7 +4,7 @@ This guide covers deploying the FastAPI backend for EduNexus AI onto **Render** 
 
 ## 1. Supabase PostgreSQL Setup
 1. Log in to [Supabase](https://supabase.com/).
-2. Create a new Organization and Project (e.g., `EduNexus AI`).
+2. Create a new Organization and Project (e.g., `).
 3. Save your Database Password securely.
 4. Go to **Project Settings -> Database**.
 5. Find your **Connection String (URI)**. 
@@ -30,6 +30,7 @@ This guide covers deploying the FastAPI backend for EduNexus AI onto **Render** 
 Scroll down to the **Environment Variables** section on Render and add the following:
 
 - `ENVIRONMENT` = `production`
+- `PYTHON_VERSION` = `3.12.1`
 - `SECRET_KEY` = *(Generate a secure key using `openssl rand -hex 32` locally and paste it here)*
 - `DATABASE_URL` = *(Your Supabase connection string securely replacing `[YOUR-PASSWORD]`)*
 - `BACKEND_CORS_ORIGINS` = `["https://your-frontend-domain.vercel.app", "http://localhost:3000"]`

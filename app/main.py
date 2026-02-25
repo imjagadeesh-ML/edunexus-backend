@@ -31,4 +31,13 @@ app.include_router(predictions.router, prefix="/api/v1/predictions", tags=["pred
 
 @app.get("/")
 def root():
-    return {"message": "Welcome to EduNexus AI API"}
+    return {
+        "message": "Welcome to EduNexus AI API",
+        "version": "1.0.1",
+        "deploy_time": "2026-02-26T00:15:00Z"
+    }
+
+@app.get("/api/v1/debug-students")
+def debug_students(db: Session = Depends(get_db)):
+    students = db.query(models.Student).all()
+    return [{"id": s.id, "email": s.email, "has_hash": bool(s.hashed_password)} for s in students]

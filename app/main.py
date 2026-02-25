@@ -44,8 +44,24 @@ def test_cors():
 
 @app.get("/api/v1/debug-students")
 def debug_students(db: Session = Depends(get_db)):
+    from urllib.parse import urlparse
     try:
+        # Mask password for safety
+        parsed = urlparse(settings.DATABASE_URL)
+        masked_url = f"{parsed.scheme}://{parsed.username}:****@{parsed.hostname}:{parsed.port}{parsed.path}"
+        
         students = db.query(models.Student).all()
-        return [{"id": s.id, "email": s.email, "has_hash": bool(s.hashed_password)} for s in students]
+        return {
+            "status": "success",
+            "masked_url": masked_url,
+            "students": [{"id": s.id, "email": s.email, "has_hash": bool(s.hashed_password)} for s in students]
+        }
     except Exception as e:
-        return {"error": str(e), "type": str(type(e))}
+        parsed = urlparse(settings.DATABASE_URL)
+        masked_url = f"{parsed.scheme}://{parsed.username}:****@{parsed.hostname}:{parsed.port}{parsed.path}"
+        return {
+            "status": "error",
+            "masked_url": masked_url,
+            "error": str(e),
+            "type": str(type(e))
+        }

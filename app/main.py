@@ -16,30 +16,14 @@ app = FastAPI(
     version=settings.VERSION,
 )
 
-# Configure CORS
-origins = ["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5173"]
-if settings.BACKEND_CORS_ORIGINS:
-    for origin in settings.BACKEND_CORS_ORIGINS:
-        if origin != "*" and origin not in origins:
-            origins.append(origin)
-
-# If we have a wildcard in settings, or if it's production and we want to be safe
-if "*" in settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=False,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-else:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+# Simplified, ultra-permissive CORS for debugging
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(students.router, prefix="/api/v1/students", tags=["students"])

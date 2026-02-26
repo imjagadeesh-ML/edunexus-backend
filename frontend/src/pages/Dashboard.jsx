@@ -1,30 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
 import {
     LogOut, LayoutDashboard, Brain, Target,
     AlertTriangle, FileText, Loader2, TrendingUp,
-    Award, BookOpen, Clock
+    Award, BookOpen, Clock, Settings
 } from 'lucide-react';
 import {
     Radar, RadarChart, PolarGrid, PolarAngleAxis,
     PolarRadiusAxis, ResponsiveContainer
 } from 'recharts';
 
+// All skills available for the radar
+const ALL_SKILLS = [
+    { key: 'ds', label: 'Data Structures', score: 85 },
+    { key: 'python', label: 'Python', score: 92 },
+    { key: 'ml', label: 'Machine Learning', score: 78 },
+    { key: 'cloud', label: 'Cloud Computing', score: 65 },
+    { key: 'dbms', label: 'Database Systems', score: 88 },
+    { key: 'algo', label: 'Algorithms', score: 80 },
+    { key: 'dsa', label: 'DSA', score: 75 },
+    { key: 'sql', label: 'SQL', score: 82 },
+    { key: 'docker', label: 'Docker', score: 55 },
+    { key: 'api', label: 'REST APIs', score: 70 },
+    { key: 'oop', label: 'OOP', score: 87 },
+    { key: 'ai', label: 'AI Basics', score: 68 },
+];
+
+const DEFAULT_SELECTED = new Set(['ds', 'python', 'ml', 'cloud', 'dbms']);
+
 const Dashboard = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [selectedSkills, setSelectedSkills] = useState(DEFAULT_SELECTED);
 
-    const radarData = [
-        { subject: 'DS', A: 85, fullMark: 100 },
-        { subject: 'Python', A: 92, fullMark: 100 },
-        { subject: 'ML', A: 78, fullMark: 100 },
-        { subject: 'Cloud', A: 65, fullMark: 100 },
-        { subject: 'DBMS', A: 88, fullMark: 100 },
-    ];
+    const toggleSkill = (key) => {
+        setSelectedSkills(prev => {
+            const next = new Set(prev);
+            if (next.has(key)) {
+                if (next.size <= 3) return prev; // minimum 3
+                next.delete(key);
+            } else {
+                if (next.size >= 8) return prev; // maximum 8
+                next.add(key);
+            }
+            return next;
+        });
+    };
+
+    const radarData = ALL_SKILLS
+        .filter(s => selectedSkills.has(s.key))
+        .map(s => ({ subject: s.label, A: s.score, fullMark: 100 }));
 
     useEffect(() => {
         if (!user?.id) return;
@@ -50,7 +79,6 @@ const Dashboard = () => {
         fetchDashboardData();
     }, [user]);
 
-    // Get user initials for avatar
     const initials = user?.name
         ? user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
         : '?';
@@ -135,17 +163,39 @@ const Dashboard = () => {
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
-                    {/* Radar Chart */}
-                    <div className="glass p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col h-[450px]">
-                        <div className="flex justify-between items-center mb-6">
+                    {/* Radar Chart with Skill Selector */}
+                    <div className="glass p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col h-[540px]">
+                        <div className="flex justify-between items-center mb-4">
                             <h3 className="text-xl font-bold text-slate-800">Skill Proficiency Radar</h3>
-                            <button className="text-xs font-bold text-primary-600 bg-primary-50 px-3 py-1 rounded-full uppercase tracking-widest">Live Analysis</button>
+                            <span className="text-xs font-bold text-primary-600 bg-primary-50 px-3 py-1 rounded-full uppercase tracking-widest">Live</span>
                         </div>
+
+                        {/* Skill Selector Pills */}
+                        <div className="mb-4">
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <Settings size={12} /> Select skills to display (3–8)
+                            </p>
+                            <div className="flex flex-wrap gap-1.5">
+                                {ALL_SKILLS.map(s => (
+                                    <button
+                                        key={s.key}
+                                        onClick={() => toggleSkill(s.key)}
+                                        className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all border ${selectedSkills.has(s.key)
+                                                ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
+                                                : 'bg-white text-slate-500 border-slate-200 hover:border-primary-300 hover:text-primary-600'
+                                            }`}
+                                    >
+                                        {s.label}{selectedSkills.has(s.key) && <span className="ml-1 opacity-80">✓</span>}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
                         <div className="flex-1 min-h-0">
                             <ResponsiveContainer width="100%" height="100%">
-                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                                <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
                                     <PolarGrid stroke="#e2e8f0" />
-                                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }} />
+                                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 600 }} />
                                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                                     <Radar
                                         name={user?.name?.split(' ')[0] || 'Student'}
@@ -160,7 +210,7 @@ const Dashboard = () => {
                     </div>
 
                     {/* AI Insight Card */}
-                    <div className="bg-[#0f172a] rounded-3xl p-10 text-white relative overflow-hidden shadow-2xl flex flex-col justify-center h-[450px]">
+                    <div className="bg-[#0f172a] rounded-3xl p-10 text-white relative overflow-hidden shadow-2xl flex flex-col justify-center h-[540px]">
                         <div className="relative z-10">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="bg-emerald-500/20 p-2 rounded-lg border border-emerald-500/30">

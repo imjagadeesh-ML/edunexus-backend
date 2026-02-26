@@ -7,13 +7,12 @@ import Dashboard from './pages/Dashboard';
 import Curriculum from './pages/Curriculum';
 import Predictions from './pages/Predictions';
 import BurnoutAlerts from './pages/BurnoutAlerts';
+import FacultyReports from './pages/FacultyReports';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   if (!user) return <Navigate to="/login" />;
-
   return children;
 };
 
@@ -28,6 +27,7 @@ function App() {
           <Route path="/curriculum" element={<ProtectedRoute><Curriculum /></ProtectedRoute>} />
           <Route path="/predictions" element={<ProtectedRoute><Predictions /></ProtectedRoute>} />
           <Route path="/burnout" element={<ProtectedRoute><BurnoutAlerts /></ProtectedRoute>} />
+          <Route path="/reports" element={<ProtectedRoute><FacultyReports /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
       </Router>

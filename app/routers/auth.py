@@ -10,6 +10,24 @@ from app.core.config import settings
 
 router = APIRouter()
 
+@router.post("/register", response_model=schemas.StudentOut, status_code=status.HTTP_201_CREATED)
+def register_student(student: schemas.StudentCreate, db: Session = Depends(get_db)):
+    """Register a new student account."""
+    # Check if email already exists
+    if crud.get_student_by_email(db, email=student.email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="An account with this email already exists.",
+        )
+    # Check if roll number already exists
+    existing_roll = db.query(models.Student).filter(models.Student.roll_number == student.roll_number).first()
+    if existing_roll:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="An account with this roll number already exists.",
+        )
+    return crud.create_student(db=db, student=student)
+
 @router.post("/login", response_model=schemas.Token)
 def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     print(f"DEBUG: Login attempt for email: '{form_data.username}'")

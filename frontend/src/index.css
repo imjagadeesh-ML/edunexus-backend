@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #f5f7ff;
+  --color-primary-100: #ebf0fe;
+  --color-primary-200: #dce4fd;
+  --color-primary-300: #c2cefb;
+  --color-primary-400: #9eadf8;
+  --color-primary-500: #7581f3;
+  --color-primary-600: #5356e9;
+  --color-primary-700: #4342d6;
+  --color-primary-800: #3836ad;
+  --color-primary-900: #32328a;
+  --color-primary-950: #1d1d51;
+  
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  background-color: #f8fafc;
+  color: #1e293b;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* Custom Glassmorphism Utility */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

@@ -5,6 +5,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Curriculum from './pages/Curriculum';
+import Predictions from './pages/Predictions';
+import BurnoutAlerts from './pages/BurnoutAlerts';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -22,22 +24,10 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/curriculum"
-            element={
-              <ProtectedRoute>
-                <Curriculum />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/curriculum" element={<ProtectedRoute><Curriculum /></ProtectedRoute>} />
+          <Route path="/predictions" element={<ProtectedRoute><Predictions /></ProtectedRoute>} />
+          <Route path="/burnout" element={<ProtectedRoute><BurnoutAlerts /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
       </Router>

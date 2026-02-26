@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
 import {
@@ -8,16 +9,15 @@ import {
 } from 'lucide-react';
 import {
     Radar, RadarChart, PolarGrid, PolarAngleAxis,
-    PolarRadiusAxis, ResponsiveContainer, BarChart,
-    Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell
+    PolarRadiusAxis, ResponsiveContainer
 } from 'recharts';
 
 const Dashboard = () => {
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Mock data for the Radar Chart (Subject knowledge)
     const radarData = [
         { subject: 'DS', A: 85, fullMark: 100 },
         { subject: 'Python', A: 92, fullMark: 100 },
@@ -27,16 +27,18 @@ const Dashboard = () => {
     ];
 
     useEffect(() => {
+        if (!user?.id) return;
+
         const fetchDashboardData = async () => {
             try {
-                const [readinessRes, placementRes] = await Promise.all([
-                    client.get('/students/1/readiness'),
-                    client.get('/students/1/placement')
+                const [readinessRes, placementRes] = await Promise.allSettled([
+                    client.get(`/students/${user.id}/readiness`),
+                    client.get(`/students/${user.id}/placement`)
                 ]);
 
                 setStats({
-                    readiness: readinessRes.data,
-                    placement: placementRes.data
+                    readiness: readinessRes.status === 'fulfilled' ? readinessRes.value.data : null,
+                    placement: placementRes.status === 'fulfilled' ? placementRes.value.data : null,
                 });
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
@@ -46,7 +48,12 @@ const Dashboard = () => {
         };
 
         fetchDashboardData();
-    }, []);
+    }, [user]);
+
+    // Get user initials for avatar
+    const initials = user?.name
+        ? user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+        : '?';
 
     if (loading) {
         return (
@@ -68,10 +75,10 @@ const Dashboard = () => {
                 </div>
 
                 <nav className="flex-1 space-y-2">
-                    <SidebarLink icon={<LayoutDashboard size={20} />} label="Dashboard" active />
-                    <SidebarLink icon={<Target size={20} />} label="Predictions" />
-                    <SidebarLink icon={<AlertTriangle size={20} />} label="Burnout Alerts" />
-                    <SidebarLink icon={<FileText size={20} />} label="Faculty Reports" />
+                    <SidebarLink icon={<LayoutDashboard size={20} />} label="Dashboard" href="/dashboard" active />
+                    <SidebarLink icon={<Target size={20} />} label="Predictions" href="/predictions" />
+                    <SidebarLink icon={<AlertTriangle size={20} />} label="Burnout Alerts" href="/burnout" />
+                    <SidebarLink icon={<FileText size={20} />} label="Faculty Reports" href="/reports" />
                     <SidebarLink icon={<BookOpen size={20} />} label="Curriculum" href="/curriculum" />
                 </nav>
 
@@ -92,11 +99,11 @@ const Dashboard = () => {
                     </div>
                     <div className="flex items-center gap-5 glass p-3 rounded-2xl shadow-sm pr-6">
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">
-                            JD
+                            {initials}
                         </div>
                         <div>
-                            <p className="font-bold text-slate-800 leading-tight">John Doe</p>
-                            <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">ID: ENX2026-001</p>
+                            <p className="font-bold text-slate-800 leading-tight">{user?.name || 'Student'}</p>
+                            <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">ID: {user?.roll_number || '—'}</p>
                         </div>
                     </div>
                 </header>
@@ -105,30 +112,30 @@ const Dashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                     <MetricCard
                         title="Skill Readiness"
-                        value={`${stats?.readiness?.score?.toFixed(1) || '0.0'}%`}
+                        value={stats?.readiness ? `${stats.readiness.score?.toFixed(1)}%` : 'No data yet'}
                         icon={<Award className="text-emerald-500" />}
                         color="emerald"
                         progress={stats?.readiness?.score || 0}
                     />
                     <MetricCard
                         title="Placement Prob."
-                        value={`${stats?.placement?.probability?.toFixed(1) || '0.0'}%`}
+                        value={stats?.placement ? `${stats.placement.probability?.toFixed(1)}%` : 'No data yet'}
                         icon={<TrendingUp className="text-primary-500" />}
                         color="primary"
                         progress={stats?.placement?.probability || 0}
                     />
                     <MetricCard
                         title="Burnout Risk"
-                        value={stats?.readiness?.risk_level || 'Low'}
+                        value={stats?.readiness?.risk_level || 'Not calculated'}
                         icon={<AlertTriangle className="text-amber-500" />}
                         color="amber"
-                        progress={stats?.readiness?.risk_level === 'Low' ? 20 : 60}
+                        progress={stats?.readiness?.risk_level === 'Low' ? 20 : stats?.readiness?.risk_level === 'Medium' ? 55 : 85}
                         isTextValue
                     />
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
-                    {/* Radar Chart Section */}
+                    {/* Radar Chart */}
                     <div className="glass p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col h-[450px]">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold text-slate-800">Skill Proficiency Radar</h3>
@@ -141,7 +148,7 @@ const Dashboard = () => {
                                     <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }} />
                                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                                     <Radar
-                                        name="John"
+                                        name={user?.name?.split(' ')[0] || 'Student'}
                                         dataKey="A"
                                         stroke="#6366f1"
                                         fill="#6366f1"
@@ -161,16 +168,25 @@ const Dashboard = () => {
                                 </div>
                                 <span className="text-emerald-400 font-bold uppercase tracking-widest text-sm">Career Trajectory</span>
                             </div>
-                            <h2 className="text-3xl font-bold mb-6 leading-tight">Insight: <span className="text-emerald-400">Full Stack</span> Fit Candidate</h2>
+                            <h2 className="text-3xl font-bold mb-6 leading-tight">
+                                Insight: <span className="text-emerald-400">Full Stack</span> Fit Candidate
+                            </h2>
                             <p className="text-slate-400 text-lg mb-8 leading-relaxed font-medium">
-                                {stats?.placement?.suggestions || 'Calculating your optimal career path based on your latest results...'}
+                                {stats?.placement?.suggestions ||
+                                    'Run a Predictions analysis to get your personalised career path insights.'}
                             </p>
                             <div className="flex gap-4">
-                                <button className="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl transition-all shadow-xl shadow-emerald-500/20 active:scale-95">
-                                    View Full Career Strategy
+                                <button
+                                    onClick={() => navigate('/predictions')}
+                                    className="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl transition-all shadow-xl shadow-emerald-500/20 active:scale-95"
+                                >
+                                    View Predictions
                                 </button>
-                                <button className="px-8 py-3 bg-white/5 hover:bg-white/10 text-white font-bold rounded-xl transition-all border border-white/10 active:scale-95">
-                                    Download Report
+                                <button
+                                    onClick={() => navigate('/burnout')}
+                                    className="px-8 py-3 bg-white/5 hover:bg-white/10 text-white font-bold rounded-xl transition-all border border-white/10 active:scale-95"
+                                >
+                                    Burnout Alerts
                                 </button>
                             </div>
                         </div>
@@ -182,9 +198,8 @@ const Dashboard = () => {
     );
 };
 
-// Sub-components for cleaner structure
-const SidebarLink = ({ icon, label, active = false }) => (
-    <a href="#" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all group font-semibold ${active
+const SidebarLink = ({ icon, label, active = false, href = '#' }) => (
+    <a href={href} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all group font-semibold ${active
         ? 'bg-primary-500/15 text-primary-400 shadow-sm'
         : 'text-slate-400 hover:text-white hover:bg-white/5'
         }`}>

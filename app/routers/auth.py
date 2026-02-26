@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
+from jose import jwt, JWTError
 from datetime import timedelta
 
 from app import schemas, crud, models
@@ -9,6 +10,29 @@ from app.core.security import verify_password, create_access_token
 from app.core.config import settings
 
 router = APIRouter()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+
+@router.get("/me", response_model=schemas.StudentOut)
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    """Return the profile of the currently logged-in student from their JWT."""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+
+    student = crud.get_student_by_email(db, email=email)
+    if student is None:
+        raise credentials_exception
+    return student
 
 @router.post("/register", response_model=schemas.StudentOut, status_code=status.HTTP_201_CREATED)
 def register_student(student: schemas.StudentCreate, db: Session = Depends(get_db)):

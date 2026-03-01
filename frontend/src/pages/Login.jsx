@@ -12,11 +12,13 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
         try {
             await login(email, password);
             navigate('/dashboard');
         } catch (err) {
-            setError('Invalid credentials. Please try again.');
+            const errorMsg = err.response?.data?.detail || 'Invalid credentials. Please try again.';
+            setError(errorMsg);
         }
     };
 

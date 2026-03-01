@@ -57,12 +57,20 @@ const ROLE_REQUIREMENTS = {
     'Robotics Engineer': ['robotics', 'control', 'embedded', 'python']
 };
 
+const BRANCH_ROLES = {
+    'CS': ['Full Stack Engineer', 'Data Scientist', 'DevOps Engineer', 'AI Researcher'],
+    'ECE': ['VLSI Engineer', 'Embedded Dev', 'Robotics Engineer'],
+    'EEE': ['Power Specialist', 'Embedded Dev', 'Control Systems'],
+    'MECH': ['Mechanical Designer', 'Robotics Engineer']
+};
+
 const Dashboard = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [selectedSkills, setSelectedSkills] = useState(DEFAULT_SELECTED);
+    const [selectedBranch, setSelectedBranch] = useState('CS');
+    const [selectedSkills, setSelectedSkills] = useState(new Set(['ds', 'python', 'ml']));
     const [skillSearch, setSkillSearch] = useState('');
 
     const toggleSkill = (key) => {
@@ -90,7 +98,11 @@ const Dashboard = () => {
         // Convert set to array to maintain selection order (recently added at the end)
         const selectedArray = Array.from(selectedSkills);
 
+        const relevantRoles = BRANCH_ROLES[selectedBranch] || [];
+
         Object.entries(ROLE_REQUIREMENTS).forEach(([role, reqs]) => {
+            if (!relevantRoles.includes(role)) return;
+
             let weightedSum = 0;
             let possibleSum = 0;
 
@@ -120,6 +132,7 @@ const Dashboard = () => {
     const bestFit = calculateBestFit();
 
     const filteredSkillsForSearch = ALL_SKILLS.filter(s =>
+        s.dept === selectedBranch &&
         s.label.toLowerCase().includes(skillSearch.toLowerCase())
     );
 
@@ -236,21 +249,47 @@ const Dashboard = () => {
                             <span className="text-xs font-bold text-primary-600 bg-primary-50 px-3 py-1 rounded-full uppercase tracking-widest">Live</span>
                         </div>
 
-                        {/* Skill Selector with Search */}
+                        {/* Step 1: Branch Selection */}
+                        <div className="mb-6">
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1">
+                                <Brain size={12} /> Step 1: Select Branch
+                            </p>
+                            <div className="flex gap-2">
+                                {['CS', 'ECE', 'EEE', 'MECH'].map(branch => (
+                                    <button
+                                        key={branch}
+                                        onClick={() => {
+                                            setSelectedBranch(branch);
+                                            // Reset to 3 default skills for the branch when switching
+                                            const branchDefaults = ALL_SKILLS.filter(s => s.dept === branch).slice(0, 3).map(s => s.key);
+                                            setSelectedSkills(new Set(branchDefaults));
+                                        }}
+                                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedBranch === branch
+                                            ? 'bg-primary-600 text-white border-primary-600 shadow-md transform scale-105'
+                                            : 'bg-white text-slate-500 border-slate-200 hover:border-primary-300'
+                                            }`}
+                                    >
+                                        {branch === 'CS' ? 'Computer Science' : branch}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Step 2: Skill Selector with Search */}
                         <div className="mb-4">
                             <div className="flex justify-between items-center mb-2">
                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                                    <Settings size={12} /> Select skills (Unlimited)
+                                    <Settings size={12} /> Step 2: Fine-tune Skills
                                 </p>
                                 <input
                                     type="text"
-                                    placeholder="Search skills..."
+                                    placeholder="Search..."
                                     value={skillSearch}
                                     onChange={(e) => setSkillSearch(e.target.value)}
                                     className="text-[10px] font-bold border-b border-slate-200 focus:border-primary-500 outline-none bg-transparent px-1 py-0.5 w-24 text-slate-600"
                                 />
                             </div>
-                            <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1">
+                            <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1 pb-2">
                                 {filteredSkillsForSearch.map(s => (
                                     <button
                                         key={s.key}
@@ -260,7 +299,6 @@ const Dashboard = () => {
                                             : 'bg-white text-slate-400 border-slate-200 hover:border-primary-300 hover:text-primary-600'
                                             }`}
                                     >
-                                        <span className="opacity-70 font-normal mr-1">{s.dept}</span>
                                         {s.label}{selectedSkills.has(s.key) && <span className="ml-1 opacity-80">✓</span>}
                                     </button>
                                 ))}

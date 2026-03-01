@@ -33,7 +33,7 @@ const FacultyReports = () => {
     const [entryForm, setEntryForm] = useState({ roll_number: '', name: '', department: 'CS', cgpa: '' });
     const [studentsList, setStudentsList] = useState([]);
 
-    const initials = user?.name ? user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
+    const initials = user?.name ? user.name.split(' ').filter(Boolean).map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
 
     const tabs = [
         { id: 'overview', label: 'Overview' },

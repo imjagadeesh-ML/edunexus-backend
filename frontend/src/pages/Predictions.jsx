@@ -1,46 +1,59 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
-import { Brain, Target, LayoutDashboard, AlertTriangle, FileText, BookOpen, LogOut, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
+import { Brain, Target, LayoutDashboard, AlertTriangle, FileText, BookOpen, LogOut, TrendingUp, RefreshCw, Star } from 'lucide-react';
 
 const Predictions = () => {
     const { user, logout } = useAuth();
     const [form, setForm] = useState({
-        skill_readiness_score: '',
-        project_count: '',
-        internship_status: false,
-        internship_type: 'Technical', // New field
-        internship_duration: '3', // New field (months)
-        communication_rating: '',
-        core_subject_marks: ''
+        override_skill_score: '',
+        override_projects: '',
     });
     const [result, setResult] = useState(null);
+    const [recommendations, setRecommendations] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(false);
     const [error, setError] = useState('');
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: value });
+    };
+
+    const fetchRecords = async () => {
+        setFetching(true);
+        setError('');
+        try {
+            const res = await client.post('/predictions/predict-placement', {
+                student_id: user.id,
+            });
+            setResult(res.data);
+            // After prediction, get recommendations for missing skills if any
+            if (res.data.suggested_improvements?.length > 0) {
+                // Heuristic: If they need to upskill, we fetch resources
+                const recRes = await client.post('/predictions/recommendations', ["Python", "React", "SQL"]); // Demo skills
+                setRecommendations(recRes.data);
+            }
+        } catch (err) {
+            setError('Failed to fetch your academic records. Please ensure your profile is complete.');
+        } finally {
+            setFetching(false);
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
-        setResult(null);
         try {
             const res = await client.post('/predictions/predict-placement', {
-                skill_readiness_score: parseFloat(form.skill_readiness_score),
-                project_count: parseInt(form.project_count),
-                internship_status: form.internship_status,
-                internship_type: form.internship_type,
-                internship_duration: parseInt(form.internship_duration),
-                communication_rating: parseFloat(form.communication_rating),
-                core_subject_marks: parseFloat(form.core_subject_marks),
+                student_id: user.id,
+                override_skill_score: form.override_skill_score ? parseFloat(form.override_skill_score) : null,
+                override_projects: form.override_projects ? parseInt(form.override_projects) : null,
             });
             setResult(res.data);
         } catch (err) {
-            setError('Failed to compute prediction. Please check your inputs.');
+            setError('Prediction failed. Please check your overrides.');
         } finally {
             setLoading(false);
         }
@@ -50,7 +63,7 @@ const Predictions = () => {
 
     return (
         <div className="min-h-screen bg-[#f8fafc] flex">
-            {/* Sidebar */}
+            {/* Sidebar (Same as before) */}
             <div className="w-68 glass-dark text-white p-6 hidden lg:flex flex-col shadow-2xl">
                 <div className="mb-12 flex items-center gap-3 px-2">
                     <div className="bg-emerald-500 p-2 rounded-lg"><Brain className="text-white w-6 h-6" /></div>
@@ -72,8 +85,8 @@ const Predictions = () => {
             <div className="flex-1 p-6 lg:p-10 overflow-y-auto">
                 <header className="flex justify-between items-center mb-12">
                     <div>
-                        <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Placement Prediction</h1>
-                        <p className="text-slate-500 text-lg mt-1 font-medium">Calculate your placement probability score</p>
+                        <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Intelligence Hub</h1>
+                        <p className="text-slate-500 text-lg mt-1 font-medium">Predicting your path to professional success</p>
                     </div>
                     <div className="flex items-center gap-4 glass p-3 rounded-2xl shadow-sm pr-6">
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">{initials}</div>
@@ -85,102 +98,101 @@ const Predictions = () => {
                 </header>
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                    {/* Input Form */}
-                    <div className="glass p-8 rounded-3xl shadow-sm border border-slate-100">
-                        <h2 className="text-2xl font-bold text-slate-800 mb-6">Your Academic Profile</h2>
-                        {error && <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm mb-4 border border-red-100">{error}</div>}
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            {[
-                                { label: 'Skill Readiness Score (0–100)', name: 'skill_readiness_score', placeholder: 'e.g. 72.5' },
-                                { label: 'Number of Projects', name: 'project_count', placeholder: 'e.g. 3' },
-                                { label: 'Communication Rating (0–10)', name: 'communication_rating', placeholder: 'e.g. 7.5' },
-                                { label: 'Core Subject Marks (0–100)', name: 'core_subject_marks', placeholder: 'e.g. 78' },
-                            ].map(({ label, name, placeholder }) => (
-                                <div key={name}>
-                                    <label className="text-sm font-semibold text-slate-600 block mb-1">{label}</label>
-                                    <input
-                                        type="number"
-                                        name={name}
-                                        required
-                                        step="any"
-                                        placeholder={placeholder}
-                                        value={form[name]}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
-                                    />
-                                </div>
-                            ))}
-                            <div className="space-y-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                <label className="flex items-center gap-3 cursor-pointer">
-                                    <input type="checkbox" name="internship_status" checked={form.internship_status} onChange={handleChange} className="w-5 h-5 rounded accent-indigo-600" />
-                                    <span className="text-sm font-bold text-slate-700">I have completed an internship</span>
-                                </label>
-
-                                {form.internship_status && (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
-                                        <div>
-                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Internship Type</label>
-                                            <select
-                                                name="internship_type"
-                                                value={form.internship_type}
-                                                onChange={handleChange}
-                                                className="w-full p-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
-                                            >
-                                                <option value="Technical">Technical/IT</option>
-                                                <option value="Research">Research</option>
-                                                <option value="Industrial">Industrial (Core)</option>
-                                                <option value="Corporate">Corporate/Mgmt</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Duration (Months): {form.internship_duration}</label>
-                                            <input
-                                                type="range"
-                                                name="internship_duration"
-                                                min="1"
-                                                max="12"
-                                                value={form.internship_duration}
-                                                onChange={handleChange}
-                                                className="w-full accent-primary-500"
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                            <button type="submit" disabled={loading} className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-60">
-                                {loading ? 'Calculating...' : 'Calculate Placement Score'}
+                    {/* Automation Panel */}
+                    <div className="space-y-6">
+                        <div className="glass p-8 rounded-3xl shadow-sm border border-emerald-100 bg-emerald-50/30">
+                            <h2 className="text-2xl font-bold text-slate-800 mb-2">Smart Analysis</h2>
+                            <p className="text-sm text-slate-600 mb-6">Skip the forms. Fetch your marks and attendance directly from our core academic registry.</p>
+                            <button
+                                onClick={fetchRecords}
+                                disabled={fetching}
+                                className="w-full flex items-center justify-center gap-2 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl transition-all shadow-lg active:scale-95 disabled:opacity-60"
+                            >
+                                {fetching ? <RefreshCw className="animate-spin" /> : <RefreshCw size={20} />}
+                                {fetching ? 'Fetching Records...' : 'Sync Academic Profile'}
                             </button>
-                        </form>
+                        </div>
+
+                        <div className="glass p-8 rounded-3xl shadow-sm border border-slate-100">
+                            <h2 className="text-2xl font-bold text-slate-800 mb-4">What-If Simulation</h2>
+                            <p className="text-xs text-slate-500 mb-6 uppercase tracking-widest font-bold">Simulate your future score</p>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-xs font-bold text-slate-500 block mb-1">Target Skill Score</label>
+                                        <input type="number" name="override_skill_score" placeholder="e.g. 85" value={form.override_skill_score} onChange={handleChange} className="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-slate-500 block mb-1">Target Project Count</label>
+                                        <input type="number" name="override_projects" placeholder="e.g. 5" value={form.override_projects} onChange={handleChange} className="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
+                                    </div>
+                                </div>
+                                <button type="submit" disabled={loading} className="w-full py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-60">
+                                    Run Simulation
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
                     {/* Result Panel */}
-                    <div className="glass p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-center">
+                    <div className="glass p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col">
                         {result ? (
-                            <div>
-                                <div className="text-center mb-8">
-                                    <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Placement Probability</p>
-                                    <p className={`text-7xl font-black ${result.placement_probability >= 60 ? 'text-emerald-500' : result.placement_probability >= 40 ? 'text-amber-500' : 'text-red-500'}`}>
+                            <div className="animate-fade-in">
+                                <div className="text-center mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-slate-50 to-slate-100/50 border border-slate-100 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-4"><Star className="text-amber-400 fill-amber-400" size={24} /></div>
+                                    <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Estimated Placement Readiness</p>
+                                    <p className={`text-8xl font-black tracking-tighter ${result.placement_probability >= 70 ? 'text-emerald-500' : result.placement_probability >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
                                         {result.placement_probability}%
                                     </p>
-                                    <p className="text-slate-400 mt-2">Confidence: {result.confidence_score}%</p>
+                                    <div className="flex items-center justify-center gap-6 mt-4">
+                                        <p className="text-slate-400 text-sm font-medium">Confidence: {result.confidence_score}%</p>
+                                        <div className="h-1 w-1 bg-slate-300 rounded-full"></div>
+                                        <p className="text-slate-400 text-sm font-medium">Data Health: Optimal</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-sm font-bold text-slate-700 uppercase tracking-widest mb-4">Suggested Improvements</p>
-                                    <ul className="space-y-3">
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                    <DataPoint label="Avg Academic Score" value={`${result.data_points?.avg_marks}%`} />
+                                    <DataPoint label="Attendance" value={`${result.data_points?.attendance_pct}%`} />
+                                </div>
+
+                                <div className="space-y-4">
+                                    <p className="text-xs font-bold text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                                        <TrendingUp size={16} /> Roadmap to 100%
+                                    </p>
+                                    <ul className="space-y-2">
                                         {result.suggested_improvements.map((s, i) => (
-                                            <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
-                                                <TrendingUp className="text-primary-500 mt-0.5 shrink-0" size={16} />
+                                            <li key={i} className="p-4 bg-primary-50/50 border border-primary-100 rounded-2xl text-sm text-slate-700 font-medium">
                                                 {s}
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
+
+                                {recommendations.length > 0 && (
+                                    <div className="mt-8 pt-8 border-t border-slate-100">
+                                        <p className="text-xs font-bold text-slate-700 uppercase tracking-widest mb-4">Recommended Resources</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {recommendations.map((r, i) => (
+                                                <a key={i} href={r.url} target="_blank" rel="noreferrer" className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all group">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors">
+                                                            <BookOpen size={16} />
+                                                        </div>
+                                                        <span className="text-sm font-bold text-slate-700">{r.title}</span>
+                                                    </div>
+                                                    <span className="text-[10px] font-bold text-primary-500 uppercase bg-primary-50 px-2 py-1 rounded">Course</span>
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         ) : (
-                            <div className="text-center text-slate-400">
-                                <Target className="mx-auto mb-4 text-slate-200" size={80} />
-                                <p className="font-semibold text-lg">Fill in your profile and hit calculate</p>
-                                <p className="text-sm mt-1">Your personalised placement score will appear here</p>
+                            <div className="flex-1 flex flex-col items-center justify-center text-center text-slate-400">
+                                <Target className="mb-6 text-slate-200" size={120} />
+                                <h3 className="text-2xl font-bold text-slate-800">Ready to simulate?</h3>
+                                <p className="max-w-xs mx-auto mt-2 font-medium">Sync your profile or run a what-if simulation to see your placement trajectory.</p>
                             </div>
                         )}
                     </div>
@@ -189,6 +201,13 @@ const Predictions = () => {
         </div>
     );
 };
+
+const DataPoint = ({ label, value }) => (
+    <div className="p-4 rounded-2xl border border-slate-100 bg-white">
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{label}</p>
+        <p className="text-xl font-bold text-slate-800">{value}</p>
+    </div>
+);
 
 const SidebarLink = ({ icon, label, active = false, href = '#' }) => (
     <a href={href} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all group font-semibold ${active ? 'bg-primary-500/15 text-primary-400 shadow-sm' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>

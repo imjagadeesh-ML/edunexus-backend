@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
+from sqlalchemy.orm import Session
 
+from app.database import get_db
 from app.services.scoring import calculate_readiness_score
 from app.services.burnout import predictor
 from app.services.placement import predict_placement_probability
+from app.services.recommendation import get_recommendations_for_skills
 from app.services.report import generate_accreditation_report
 
 router = APIRouter()
@@ -24,13 +27,9 @@ class BurnoutInput(BaseModel):
     high_attendance_low_marks: int
 
 class PlacementInput(BaseModel):
-    skill_readiness_score: float
-    project_count: int
-    internship_status: bool
-    internship_type: Optional[str] = "None"
-    internship_duration: Optional[int] = 0
-    communication_rating: float
-    core_subject_marks: float
+    student_id: int
+    override_skill_score: Optional[float] = None
+    override_projects: Optional[int] = None
 
 class ReportInput(BaseModel):
     department_name: str
@@ -54,20 +53,23 @@ def get_readiness_score(data: ReadinessInput):
 
 @router.post("/predict-burnout")
 def predict_burnout(data: BurnoutInput):
-    # Pass as dictionary to the predictor
     return predictor.predict(data.dict())
 
 @router.post("/predict-placement")
-def predict_placement(data: PlacementInput):
-    return predict_placement_probability(
-        skill_readiness_score=data.skill_readiness_score,
-        project_count=data.project_count,
-        internship_status=data.internship_status,
-        internship_type=data.internship_type,
-        internship_duration=data.internship_duration,
-        communication_rating=data.communication_rating,
-        core_subject_marks=data.core_subject_marks
+def predict_placement(data: PlacementInput, db: Session = Depends(get_db)):
+    result = predict_placement_probability(
+        db=db,
+        student_id=data.student_id,
+        override_skill_score=data.override_skill_score,
+        override_projects=data.override_projects
     )
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result
+
+@router.post("/recommendations")
+def get_recommendations(missing_skills: List[str], db: Session = Depends(get_db)):
+    return get_recommendations_for_skills(db, missing_skills)
 
 @router.post("/generate-report")
 def generate_report(data: ReportInput):

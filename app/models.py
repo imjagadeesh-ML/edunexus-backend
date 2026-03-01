@@ -112,3 +112,36 @@ class PlacementPrediction(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     student = relationship("Student", back_populates="placement_prediction")
+
+class ReadinessHistory(Base):
+    __tablename__ = "readiness_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("students.id"))
+    score = Column(Float)
+    recorded_at = Column(DateTime, default=datetime.utcnow)
+
+class Badge(Base):
+    __tablename__ = "badges"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True)
+    description = Column(Text)
+    icon_url = Column(String) # For frontend display
+
+class StudentBadge(Base):
+    __tablename__ = "student_badges"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("students.id"))
+    badge_id = Column(Integer, ForeignKey("badges.id"))
+    awarded_at = Column(DateTime, default=datetime.utcnow)
+
+class Resource(Base):
+    __tablename__ = "resources"
+
+    id = Column(Integer, primary_key=True, index=True)
+    skill_name = Column(String, index=True)
+    title = Column(String)
+    url = Column(String)
+    type = Column(String) # Video, Article, Course

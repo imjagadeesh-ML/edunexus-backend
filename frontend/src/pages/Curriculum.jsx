@@ -9,6 +9,40 @@ import {
 
 // Career path data for the Exploration Map modal
 const EXPLORATION_DATA = {
+    CS101: {
+        careerPaths: [
+            { role: 'Backend Developer', steps: ['Arrays & Trees', 'Graph Algorithms', 'System Design', 'API Development'], salary: '6–12 LPA' },
+            { role: 'Competitive Programmer', steps: ['DSA Mastery', 'Contest Practice', 'Open Source', 'Top Company'], salary: '8–16 LPA' },
+            { role: 'Software Engineer', steps: ['DSA Fluency', 'LeetCode Practice', 'System Design', 'Behavioural Prep'], salary: '7–14 LPA' },
+        ],
+        resources: [
+            { name: 'Introduction to Algorithms (CLRS)', url: 'https://mitpress.mit.edu/books/introduction-algorithms' },
+            { name: 'NeetCode DSA Roadmap', url: 'https://neetcode.io/roadmap' },
+            { name: 'LeetCode', url: 'https://leetcode.com' },
+        ],
+    },
+    CS102: {
+        careerPaths: [
+            { role: 'Data Scientist', steps: ['Core Python', 'NumPy & Pandas', 'Scikit-learn', 'ML Projects'], salary: '7–15 LPA' },
+            { role: 'Backend Developer', steps: ['Flask / FastAPI', 'REST APIs', 'ORM', 'Docker'], salary: '6–13 LPA' },
+            { role: 'Automation Engineer', steps: ['Scripting', 'Selenium', 'CI/CD', 'Cloud Deployment'], salary: '5–10 LPA' },
+        ],
+        resources: [
+            { name: 'Python Official Docs', url: 'https://docs.python.org/3/' },
+            { name: 'FastAPI Documentation', url: 'https://fastapi.tiangolo.com' },
+        ],
+    },
+    CS301: {
+        careerPaths: [
+            { role: 'ML Engineer', steps: ['Math Foundations', 'Core ML Algorithms', 'Deep Learning', 'Production ML'], salary: '8–16 LPA' },
+            { role: 'Data Scientist', steps: ['EDA', 'Feature Engineering', 'Model Training', 'Business Insights'], salary: '7–14 LPA' },
+            { role: 'AI Researcher', steps: ['Graduate Study', 'Paper Reproduction', 'Novel Research', 'Publications'], salary: '10–20 LPA' },
+        ],
+        resources: [
+            { name: 'Practical ML by fast.ai', url: 'https://course.fast.ai' },
+            { name: 'Scikit-learn Documentation', url: 'https://scikit-learn.org/stable/' },
+        ],
+    },
     CS401: {
         careerPaths: [
             { role: 'DevOps Engineer', steps: ['Linux Basics', 'Docker & K8s', 'CI/CD', 'Cloud Infra'], salary: '8–15 LPA' },

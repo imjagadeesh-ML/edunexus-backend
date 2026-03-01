@@ -9,132 +9,111 @@ import {
 
 // Career path data for the Exploration Map modal
 const EXPLORATION_DATA = {
+    // --- COMPUTER SCIENCE ---
     CS101: {
         careerPaths: [
             { role: 'Backend Developer', steps: ['Arrays & Trees', 'Graph Algorithms', 'System Design', 'API Development'], salary: '6–12 LPA' },
-            { role: 'Competitive Programmer', steps: ['DSA Mastery', 'Contest Practice', 'Open Source', 'Top Company'], salary: '8–16 LPA' },
             { role: 'Software Engineer', steps: ['DSA Fluency', 'LeetCode Practice', 'System Design', 'Behavioural Prep'], salary: '7–14 LPA' },
         ],
         resources: [
             { name: 'Introduction to Algorithms (CLRS)', url: 'https://mitpress.mit.edu/books/introduction-algorithms' },
             { name: 'NeetCode DSA Roadmap', url: 'https://neetcode.io/roadmap' },
-            { name: 'LeetCode', url: 'https://leetcode.com' },
         ],
     },
-    CS102: {
-        careerPaths: [
-            { role: 'Data Scientist', steps: ['Core Python', 'NumPy & Pandas', 'Scikit-learn', 'ML Projects'], salary: '7–15 LPA' },
-            { role: 'Backend Developer', steps: ['Flask / FastAPI', 'REST APIs', 'ORM', 'Docker'], salary: '6–13 LPA' },
-            { role: 'Automation Engineer', steps: ['Scripting', 'Selenium', 'CI/CD', 'Cloud Deployment'], salary: '5–10 LPA' },
-        ],
-        resources: [
-            { name: 'Python Official Docs', url: 'https://docs.python.org/3/' },
-            { name: 'FastAPI Documentation', url: 'https://fastapi.tiangolo.com' },
-        ],
-    },
-    CS301: {
-        careerPaths: [
-            { role: 'ML Engineer', steps: ['Math Foundations', 'Core ML Algorithms', 'Deep Learning', 'Production ML'], salary: '8–16 LPA' },
-            { role: 'Data Scientist', steps: ['EDA', 'Feature Engineering', 'Model Training', 'Business Insights'], salary: '7–14 LPA' },
-            { role: 'AI Researcher', steps: ['Graduate Study', 'Paper Reproduction', 'Novel Research', 'Publications'], salary: '10–20 LPA' },
-        ],
-        resources: [
-            { name: 'Practical ML by fast.ai', url: 'https://course.fast.ai' },
-            { name: 'Scikit-learn Documentation', url: 'https://scikit-learn.org/stable/' },
-        ],
-    },
-    CS401: {
-        careerPaths: [
-            { role: 'DevOps Engineer', steps: ['Linux Basics', 'Docker & K8s', 'CI/CD', 'Cloud Infra'], salary: '8–15 LPA' },
-            { role: 'Cloud Architect', steps: ['AWS Certifications', 'Multi-cloud Strategy', 'Cost Optimisation', 'FinOps'], salary: '12–25 LPA' },
-            { role: 'Site Reliability Engineer', steps: ['Monitoring', 'Incident Response', 'Automation', 'SLA Management'], salary: '10–18 LPA' },
-        ],
-        resources: [
-            { name: 'AWS Free Tier', url: 'https://aws.amazon.com/free/' },
-            { name: 'Docker Documentation', url: 'https://docs.docker.com' },
-            { name: 'Kubernetes Docs', url: 'https://kubernetes.io/docs/home/' },
-        ],
-    },
-    ECE101: {
+    // --- ECE ---
+    EC101: {
         careerPaths: [
             { role: 'VLSI Engineer', steps: ['Digital Logic', 'Verilog/VHDL', 'Synthesis', 'Physical Design'], salary: '10–22 LPA' },
-            { role: 'Embedded Systems Dev', steps: ['8051/ARM', 'RTOS', 'Device Drivers', 'C Programming'], salary: '6–14 LPA' },
+            { role: 'Verification Engineer', steps: ['System Verilog', 'UVM', 'Scripting (Perl/Tcl)', 'Logic Equivalence'], salary: '8–18 LPA' },
         ],
         resources: [
-            { name: 'NPTEL VLSI Course', url: '#' },
-            { name: 'ARM Education', url: '#' },
+            { name: 'NPTEL VLSI Course', url: 'https://nptel.ac.in/courses/117101058' },
+            { name: 'EDA Playground', url: 'https://edaplayground.com' },
         ],
     },
-    MECH101: {
+    EC302: {
         careerPaths: [
-            { role: 'Design Engineer', steps: ['Engineering Drawing', 'AutoCAD', 'SolidWorks', 'FEA'], salary: '5–12 LPA' },
-            { role: 'Robotics Engineer', steps: ['Control Systems', 'ROS', 'Actuators', 'Path Planning'], salary: '8–18 LPA' },
+            { role: 'Embedded Systems Dev', steps: ['C/C++ Programming', 'RTOS', 'Device Drivers', 'Kernel Internals'], salary: '6–15 LPA' },
+            { role: 'Firmware Engineer', steps: ['Microcontrollers', 'Bare-metal C', 'Bootloaders', 'Communication Protocols'], salary: '7–16 LPA' },
         ],
         resources: [
-            { name: 'AutoDesk Learning', url: '#' },
-            { name: 'SolidWorks Tutorials', url: '#' },
+            { name: 'Embedded Systems by Jack Ganssle', url: 'http://www.ganssle.com/' },
+            { name: 'Microchip University', url: 'https://mu.microchip.com' },
         ],
     },
-    CS201: {
+    // --- AIML ---
+    AI302: {
         careerPaths: [
-            { role: 'Database Administrator', steps: ['SQL Mastery', 'Performance Tuning', 'Backup & Recovery', 'High Availability'], salary: '10–20 LPA' },
-            { role: 'Data Engineer', steps: ['SQL + Python', 'ETL Pipelines', 'Data Warehousing', 'Cloud Databases'], salary: '14–28 LPA' },
-            { role: 'Backend Engineer', steps: ['ORM & Schema Design', 'Query Optimisation', 'Caching (Redis)', 'Microservices'], salary: '12–25 LPA' },
+            { role: 'ML Engineer', steps: ['Calculus & Linear Algebra', 'Deep Learning', 'PyTorch/TensorFlow', 'MLOps'], salary: '12–25 LPA' },
+            { role: 'Computer Vision Engineer', steps: ['OpenCV', 'CNNs', 'Object Detection', 'Image Segmentation'], salary: '10–22 LPA' },
         ],
         resources: [
-            { name: 'PostgreSQL Tutorial', url: 'https://www.postgresqltutorial.com' },
-            { name: 'SQLZoo', url: 'https://sqlzoo.net' },
-            { name: 'MongoDB University', url: 'https://university.mongodb.com' },
+            { name: 'DeepLearning.AI', url: 'https://www.deeplearning.ai/' },
+            { name: 'PyTorch Tutorials', url: 'https://pytorch.org/tutorials/' },
+        ],
+    },
+    // --- MECH ---
+    ME201: {
+        careerPaths: [
+            { role: 'Design Engineer', steps: ['Solid Mechanics', 'CAD Mastery', 'FEA Basics', 'Design for Mfg'], salary: '5–12 LPA' },
+            { role: 'Product Development Engineer', steps: ['Thermodynamics', 'Prototyping', 'Material Testing', 'Innovation'], salary: '6–14 LPA' },
+        ],
+        resources: [
+            { name: 'ASME Learning', url: 'https://www.asme.org/' },
+            { name: 'AutoDesk University', url: 'https://www.autodesk.com/university/' },
+        ],
+    },
+    // --- CIVIL ---
+    CE201: {
+        careerPaths: [
+            { role: 'Structural Engineer', steps: ['Statics & Dynamics', 'RCC Design', 'Steel Structures', 'Staad.Pro'], salary: '5–13 LPA' },
+            { role: 'Bridge Engineer', steps: ['Bridge Architecture', 'Soil Mechanics', 'Seismic Analysis', 'Load Testing'], salary: '7–18 LPA' },
+        ],
+        resources: [
+            { name: 'ICE (Institution of Civil Engineers)', url: 'https://www.ice.org.uk/' },
+            { name: 'Autodesk Civil 3D Docs', url: 'https://help.autodesk.com/' },
+        ],
+    },
+    // --- EEE ---
+    EE301: {
+        careerPaths: [
+            { role: 'Power Systems Engineer', steps: ['AC/DC Machinery', 'Transmission', 'Smart Grids', 'Stability'], salary: '6–15 LPA' },
+            { role: 'EV Systems Engineer', steps: ['Battery Management', 'Motor Control', 'Power Electronics', 'Charging Infra'], salary: '8–20 LPA' },
+        ],
+        resources: [
+            { name: 'IEEE Power & Energy Society', url: 'https://www.ieee-pes.org/' },
+            { name: 'MATLAB for Electrical Eng', url: 'https://www.mathworks.com/learn/tutorials/' },
         ],
     },
 };
 
 // Full curriculum data with all skills
 const ALL_MAPPINGS = [
-    {
-        subject: "Data Structures & Algorithms",
-        code: "CS101",
-        year: 1,
-        credits: 4,
-        roles: ["Software Engineer", "Competitive Programmer"],
-        skills: ["Arrays", "Linked Lists", "Stacks", "Trees", "Sorting"],
-        importance: 95,
-        icon: <Code className="text-indigo-500" />,
-        color: "indigo"
-    },
-    {
-        subject: "Computer Networks",
-        code: "CS202",
-        year: 2,
-        credits: 3,
-        roles: ["Network Engineer", "Backend Developer"],
-        skills: ["OSI Model", "TCP/IP", "HTTP/HTTPS", "DNS", "Subnetting"],
-        importance: 82,
-        icon: <Globe className="text-blue-500" />,
-        color: "sky"
-    },
-    {
-        subject: "Machine Learning",
-        code: "CS301",
-        year: 3,
-        credits: 4,
-        roles: ["ML Engineer", "Data Scientist"],
-        skills: ["Regression", "Neural Networks", "Clustering", "Scikit-Learn"],
-        importance: 92,
-        icon: <Cpu className="text-amber-500" />,
-        color: "amber"
-    },
-    {
-        subject: "Cloud Architecture",
-        code: "CS401",
-        year: 4,
-        credits: 3,
-        roles: ["Cloud Architect", "DevOps Engineer"],
-        skills: ["AWS", "Kubernetes", "Docker", "Terraform", "Serverless"],
-        importance: 88,
-        icon: <Cloud className="text-emerald-500" />,
-        color: "emerald"
-    }
+    // --- COMPUTER SCIENCE ---
+    { subject: "Data Structures & Algorithms", code: "CS101", year: 1, branch: "CS", roles: ["Software Engineer", "Backend Developer"], skills: ["Arrays", "Heaps", "Graphs", "DP", "Complexity Analysis"], importance: 95, icon: <Code className="text-indigo-500" />, color: "indigo" },
+    { subject: "Database Systems", code: "CS201", year: 2, branch: "CS", roles: ["DBA", "Data Engineer"], skills: ["SQL", "NoSQL", "Indexing", "Normalization", "ACID"], importance: 88, icon: <Database className="text-sky-500" />, color: "sky" },
+    { subject: "Operating Systems", code: "CS302", year: 3, branch: "CS", roles: ["Systems Programmer", "SRE"], skills: ["Process Management", "Memory", "File Systems", "Concurrency"], importance: 85, icon: <Settings className="text-rose-500" />, color: "rose" },
+
+    // --- AI & ML ---
+    { subject: "Applied Statistics for AI", code: "AI201", year: 2, branch: "AIML", roles: ["Data Scientist", "Research Analyst"], skills: ["Probability", "Distribution", "Hypothesis Testing", "Regression"], importance: 90, icon: <Target className="text-emerald-500" />, color: "emerald" },
+    { subject: "Neural Networks & Deep Learning", code: "AI302", year: 3, branch: "AIML", roles: ["AI Engineer", "CV Engineer"], skills: ["CNNs", "RNNs", "Backpropagation", "TensorFlow"], importance: 94, icon: <Brain className="text-indigo-500" />, color: "indigo" },
+    { subject: "Natural Language Processing", code: "AI401", year: 4, branch: "AIML", roles: ["NLP Engineer", "LLM Specialized"], skills: ["Tokenization", "Transformers", "BERT/GPT", "Sentiment Analysis"], importance: 88, icon: <Globe className="text-blue-500" />, color: "blue" },
+
+    // --- ECE ---
+    { subject: "Digital System Design", code: "EC101", year: 1, branch: "ECE", roles: ["VLSI Designer", "Logic Engineer"], skills: ["K-Maps", "VHDL/Verilog", "FSMs", "FPGA"], importance: 88, icon: <Cpu className="text-amber-500" />, color: "amber" },
+    { subject: "Embedded Systems & RTOS", code: "EC302", year: 3, branch: "ECE", roles: ["Embedded Developer", "Firmware Engineer"], skills: ["C/C++", "RTOS", "Interrupts", "Device Drivers"], importance: 92, icon: <Settings className="text-emerald-500" />, color: "emerald" },
+
+    // --- EEE ---
+    { subject: "Power Electronics", code: "EE301", year: 3, branch: "EEE", roles: ["Power Systems Engineer", "EV Engineer"], skills: ["Converters", "Inverters", "PWM", "Semiconductors"], importance: 85, icon: <Cpu className="text-rose-500" />, color: "rose" },
+    { subject: "Electric Vehicles (EV)", code: "EE401", year: 4, branch: "EEE", roles: ["EV Architect", "Control Systems Lead"], skills: ["BMS", "Motor Control", "Regenerative Braking", "Li-ion Tech"], importance: 90, icon: <Target className="text-sky-500" />, color: "sky" },
+
+    // --- MECHANICAL ---
+    { subject: "Design of Machine Elements", code: "ME201", year: 2, branch: "MECH", roles: ["Design Engineer", "Structural Designer"], skills: ["CAD", "Stress Analysis", "Solid Mechanics", "Material Selection"], importance: 87, icon: <Settings className="text-indigo-500" />, color: "indigo" },
+    { subject: "Robotics & Automation", code: "ME301", year: 3, branch: "MECH", roles: ["Robotics Engineer", "Automation Lead"], skills: ["ROS", "Kinematics", "Sensors", "Path Planning"], importance: 89, icon: <Cpu className="text-amber-500" />, color: "amber" },
+
+    // --- CIVIL ---
+    { subject: "Structural Analysis", code: "CE201", year: 2, branch: "CIVIL", roles: ["Structural Engineer", "Site Manager"], skills: ["Statics", "Matrix Methods", "Force Method", "RCC"], importance: 92, icon: <Map className="text-rose-500" />, color: "rose" },
+    { subject: "Building Information Modeling (BIM)", code: "CE401", year: 4, branch: "CIVIL", roles: ["BIM Architect", "Const. Manager"], skills: ["Revit", "Autodesk Civil 3D", "4D Scheduling", "LOD"], importance: 88, icon: <Globe className="text-sky-500" />, color: "sky" },
 ];
 
 const skillColorMap = {
@@ -239,14 +218,17 @@ const Curriculum = () => {
     const [search, setSearch] = useState('');
     const [expanded, setExpanded] = useState({});
     const [explorationItem, setExplorationItem] = useState(null);
+    const [selectedBranch, setSelectedBranch] = useState('All');
 
     const toggleExpand = (code) => setExpanded(prev => ({ ...prev, [code]: !prev[code] }));
 
-    const filtered = ALL_MAPPINGS.filter(m =>
-        m.subject.toLowerCase().includes(search.toLowerCase()) ||
-        m.roles.some(r => r.toLowerCase().includes(search.toLowerCase())) ||
-        m.skills.some(s => s.toLowerCase().includes(search.toLowerCase()))
-    );
+    const filtered = ALL_MAPPINGS.filter(m => {
+        const matchesBranch = selectedBranch === 'All' || m.branch === selectedBranch;
+        const matchesSearch = m.subject.toLowerCase().includes(search.toLowerCase()) ||
+            m.roles.some(r => r.toLowerCase().includes(search.toLowerCase())) ||
+            m.skills.some(s => s.toLowerCase().includes(search.toLowerCase()));
+        return matchesBranch && matchesSearch;
+    });
 
     const groupedByYear = [1, 2, 3, 4].map(year => ({
         year,
@@ -281,15 +263,32 @@ const Curriculum = () => {
                     <p className="text-slate-500 text-lg mt-1 font-medium italic">Every skill you'll need, mapped to the jobs that demand them.</p>
                 </header>
 
-                <div className="mb-8 relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={e => setSearch(e.target.value)}
-                        placeholder="Search subjects, roles, or specific skills..."
-                        className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm transition-all"
-                    />
+                <div className="flex flex-col lg:flex-row gap-4 mb-8">
+                    <div className="flex-1 relative">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            placeholder="Search subjects, roles, or specific skills..."
+                            className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm transition-all text-slate-700 font-medium"
+                        />
+                    </div>
+
+                    <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+                        {['All', 'CS', 'AIML', 'ECE', 'EEE', 'MECH', 'CIVIL'].map(branch => (
+                            <button
+                                key={branch}
+                                onClick={() => setSelectedBranch(branch)}
+                                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${selectedBranch === branch
+                                    ? 'bg-primary-600 text-white shadow-md'
+                                    : 'text-slate-500 hover:bg-slate-50'
+                                    }`}
+                            >
+                                {branch === 'AIML' ? 'AI & ML' : branch}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 <div className="space-y-12">
@@ -318,9 +317,9 @@ const Curriculum = () => {
                                                 <div className="flex-1">
                                                     <div className="flex justify-between items-start mb-2">
                                                         <div>
-                                                            <span className="text-xs font-bold text-primary-600 bg-primary-50 px-2 py-1 rounded uppercase mb-2 inline-block tracking-widest">{item.code}</span>
+                                                            <span className="text-xs font-bold text-primary-600 bg-primary-50 px-2 py-1 rounded uppercase mb-2 inline-block tracking-widest">{item.code} | {item.branch}</span>
                                                             <h3 className="text-2xl font-bold text-slate-800">{item.subject}</h3>
-                                                            <p className="text-sm text-slate-400 mt-0.5">{item.credits} Credits</p>
+                                                            <p className="text-sm text-slate-400 mt-0.5">Comprehensive Industry Module</p>
                                                         </div>
                                                         <div className="text-right">
                                                             <p className="text-xs text-slate-400 font-bold uppercase mb-1">Industry Impact</p>

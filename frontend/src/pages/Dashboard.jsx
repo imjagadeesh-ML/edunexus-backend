@@ -14,54 +14,94 @@ import {
 
 // All skills available for the radar (CS, ECE, EEE, MECH, etc.)
 const ALL_SKILLS = [
-    // Computing (CS/IT)
+    // --- Computing & AI/ML ---
     { key: 'ds', label: 'Data Structures', score: 85, dept: 'CS' },
     { key: 'python', label: 'Python', score: 92, dept: 'CS' },
-    { key: 'ml', label: 'Machine Learning', score: 78, dept: 'CS' },
+    { key: 'ml', label: 'Machine Learning', score: 78, dept: 'AIML' },
+    { key: 'deep_learning', label: 'Deep Learning', score: 72, dept: 'AIML' },
+    { key: 'nlp', label: 'NLP/LLMs', score: 65, dept: 'AIML' },
+    { key: 'cv', label: 'Computer Vision', score: 68, dept: 'AIML' },
     { key: 'cloud', label: 'Cloud Computing', score: 65, dept: 'CS' },
     { key: 'dbms', label: 'Database Systems', score: 88, dept: 'CS' },
     { key: 'algo', label: 'Algorithms', score: 80, dept: 'CS' },
     { key: 'sql', label: 'SQL', score: 82, dept: 'CS' },
-    { key: 'docker', label: 'Docker', score: 55, dept: 'CS' },
+    { key: 'docker', label: 'Docker/DevOps', score: 55, dept: 'CS' },
     { key: 'api', label: 'REST APIs', score: 70, dept: 'CS' },
-    { key: 'oop', label: 'OOP', score: 87, dept: 'CS' },
-    { key: 'ai', label: 'AI Basics', score: 68, dept: 'CS' },
+    { key: 'oop', label: 'OOP/Java', score: 87, dept: 'CS' },
+    { key: 'ai', label: 'AI Ethics', score: 68, dept: 'AIML' },
+    { key: 'stats', label: 'Applied Stats', score: 82, dept: 'AIML' },
 
-    // ECE & EEE (Core Electronics)
+    // --- ECE & EEE (Electronics) ---
     { key: 'vlsi', label: 'VLSI Design', score: 72, dept: 'ECE' },
     { key: 'embedded', label: 'Embedded Systems', score: 84, dept: 'ECE' },
-    { key: 'iot', label: 'IoT Architecture', score: 77, dept: 'ECE' },
+    { key: 'iot', label: 'IoT & Sensors', score: 77, dept: 'ECE' },
     { key: 'psp', label: 'Power Systems', score: 68, dept: 'EEE' },
     { key: 'control', label: 'Control Systems', score: 81, dept: 'EEE' },
-    { key: 'analog', label: 'Analog Electronics', score: 75, dept: 'ECE' },
+    { key: 'analog', label: 'Analog Circuits', score: 75, dept: 'ECE' },
+    { key: 'signal', label: 'Signal Processing', score: 62, dept: 'ECE' },
+    { key: 'pcb', label: 'PCB Design', score: 70, dept: 'ECE' },
+    { key: 'ev', label: 'EV Tech', score: 58, dept: 'EEE' },
+    { key: 'renewable', label: 'Renewable Energy', score: 74, dept: 'EEE' },
 
-    // Mechanical & Civil
-    { key: 'cad', label: 'CAD/AutoCAD', score: 88, dept: 'MECH' },
-    { key: 'robotics', label: 'Robotics & AI', score: 82, dept: 'MECH' },
+    // --- Mechanical & Core ---
+    { key: 'cad', label: 'AutoCAD/CATIA', score: 88, dept: 'MECH' },
+    { key: 'robotics', label: 'Robotics & ROS', score: 82, dept: 'MECH' },
     { key: 'thermo', label: 'Thermodynamics', score: 70, dept: 'MECH' },
-    { key: 'manuf', label: 'Manufacturing', score: 65, dept: 'MECH' },
+    { key: 'fea', label: 'FEA/Analysis', score: 65, dept: 'MECH' },
+    { key: 'cam', label: 'CAM/Manufacturing', score: 72, dept: 'MECH' },
+    { key: 'mat_sci', label: 'Material Science', score: 60, dept: 'MECH' },
+
+    // --- Civil Engineering ---
+    { key: 'struct', label: 'Structural Analysis', score: 85, dept: 'CIVIL' },
+    { key: 'geo', label: 'Geotech Eng', score: 72, dept: 'CIVIL' },
+    { key: 'bim', label: 'BIM/Revit', score: 68, dept: 'CIVIL' },
+    { key: 'surv', label: 'Surveying/GIS', score: 81, dept: 'CIVIL' },
+    { key: 'hydro', label: 'Hydraulics', score: 65, dept: 'CIVIL' },
+    { key: 'const_mgmt', label: 'Const Management', score: 74, dept: 'CIVIL' },
 ];
 
 const DEFAULT_SELECTED = new Set(['ds', 'python', 'ml', 'cloud', 'dbms']);
 
 // Role-to-Skill Requirement Mapping for multi-disciplinary insights
 const ROLE_REQUIREMENTS = {
+    // IT/CS
     'Full Stack Engineer': ['ds', 'python', 'sql', 'api', 'oop'],
-    'Data Scientist': ['python', 'ml', 'sql', 'dbms', 'ai'],
+    'Data Scientist': ['python', 'ml', 'sql', 'dbms', 'stats'],
+    'MLOps Engineer': ['ml', 'cloud', 'docker', 'api', 'dbms'],
     'DevOps Engineer': ['cloud', 'docker', 'api', 'sql'],
-    'AI Researcher': ['ml', 'ai', 'python', 'algo', 'ds'],
-    'VLSI Engineer': ['vlsi', 'analog', 'embedded'],
-    'Embedded Dev': ['embedded', 'iot', 'analog', 'python'],
-    'Power Specialist': ['psp', 'control', 'analog'],
-    'Mechanical Designer': ['cad', 'robotics', 'thermo', 'manuf'],
-    'Robotics Engineer': ['robotics', 'control', 'embedded', 'python']
+
+    // AI/ML Specialization
+    'AI Researcher': ['ml', 'deep_learning', 'stats', 'algo', 'ds'],
+    'NLP Architect': ['nlp', 'deep_learning', 'python', 'ml'],
+    'Computer Vision Dev': ['cv', 'deep_learning', 'ml', 'python'],
+
+    // Core Electronics
+    'VLSI Design Engineer': ['vlsi', 'analog', 'pcb'],
+    'Embedded Architect': ['embedded', 'iot', 'analog', 'signal'],
+    'Signal Engineer': ['signal', 'analog', 'python'],
+
+    // Electrical
+    'Power Systems Expert': ['psp', 'control', 'renewable'],
+    'EV Tech Lead': ['ev', 'control', 'embedded', 'analog'],
+
+    // Mechanical
+    'FEA Design Engineer': ['fea', 'cad', 'thermo', 'mat_sci'],
+    'Manufacturing Lead': ['cam', 'mat_sci', 'thermo'],
+    'Robotics Architect': ['robotics', 'control', 'embedded', 'iot'],
+
+    // Civil
+    'Structural Specialist': ['struct', 'bim', 'fea'],
+    'Construction Manager': ['const_mgmt', 'bim', 'geo'],
+    'Geotech Consultant': ['geo', 'surv', 'hydro'],
 };
 
 const BRANCH_ROLES = {
-    'CS': ['Full Stack Engineer', 'Data Scientist', 'DevOps Engineer', 'AI Researcher'],
-    'ECE': ['VLSI Engineer', 'Embedded Dev', 'Robotics Engineer'],
-    'EEE': ['Power Specialist', 'Embedded Dev', 'Control Systems'],
-    'MECH': ['Mechanical Designer', 'Robotics Engineer']
+    'CS': ['Full Stack Engineer', 'Data Scientist', 'MLOps Engineer', 'DevOps Engineer'],
+    'AIML': ['AI Researcher', 'NLP Architect', 'Computer Vision Dev', 'Data Scientist'],
+    'ECE': ['VLSI Design Engineer', 'Embedded Architect', 'Signal Engineer'],
+    'EEE': ['Power Systems Expert', 'EV Tech Lead', 'Embedded Architect'],
+    'MECH': ['FEA Design Engineer', 'Manufacturing Lead', 'Robotics Architect'],
+    'CIVIL': ['Structural Specialist', 'Construction Manager', 'Geotech Consultant']
 };
 
 const Dashboard = () => {
@@ -255,22 +295,21 @@ const Dashboard = () => {
                             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1">
                                 <Brain size={12} /> Step 1: Select Branch
                             </p>
-                            <div className="flex gap-2">
-                                {['CS', 'ECE', 'EEE', 'MECH'].map(branch => (
+                            <div className="flex flex-wrap gap-2">
+                                {['CS', 'AIML', 'ECE', 'EEE', 'MECH', 'CIVIL'].map(branch => (
                                     <button
                                         key={branch}
                                         onClick={() => {
                                             setSelectedBranch(branch);
-                                            // Reset to 3 default skills for the branch when switching
-                                            const branchDefaults = ALL_SKILLS.filter(s => s.dept === branch).slice(0, 3).map(s => s.key);
+                                            const branchDefaults = ALL_SKILLS.filter(s => s.dept === branch).slice(0, 4).map(s => s.key);
                                             setSelectedSkills(new Set(branchDefaults));
                                         }}
-                                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedBranch === branch
+                                        className={`px-4 py-2 rounded-xl text-[10px] font-bold transition-all border ${selectedBranch === branch
                                             ? 'bg-primary-600 text-white border-primary-600 shadow-md transform scale-105'
                                             : 'bg-white text-slate-500 border-slate-200 hover:border-primary-300'
                                             }`}
                                     >
-                                        {branch === 'CS' ? 'Computer Science' : branch}
+                                        {branch === 'CS' ? 'Computer Science' : branch === 'AIML' ? 'AI & ML' : branch}
                                     </button>
                                 ))}
                             </div>

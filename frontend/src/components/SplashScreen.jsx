@@ -19,7 +19,7 @@ const SplashScreen = () => {
                 {/* Text Container */}
                 <div className="text-center">
                     <h1 className="text-4xl font-black text-white mb-3 tracking-tighter animate-fade-in">
-                        EduNexus <span className="text-primary-400">AI</span>
+                        Strat<span className="text-primary-400">Acade</span>
                     </h1>
                     <div className="flex items-center gap-2 justify-center">
                         <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
@@ -27,7 +27,7 @@ const SplashScreen = () => {
                         <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" />
                     </div>
                     <p className="text-slate-400 text-sm font-bold uppercase tracking-[0.2em] mt-8 animate-pulse">
-                        Initializing Intelligence
+                        Optimizing Your Path
                     </p>
                 </div>
             </div>

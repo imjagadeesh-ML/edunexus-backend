@@ -4,23 +4,36 @@ def predict_placement_probability(
     skill_readiness_score: float,
     project_count: int,
     internship_status: bool,
-    communication_rating: float, # 0 to 10
-    core_subject_marks: float # 0 to 100
+    internship_type: str = "None",
+    internship_duration: int = 0,
+    communication_rating: float = 0, # 0 to 10
+    core_subject_marks: float = 0 # 0 to 100
 ) -> Dict[str, Any]:
     """
-    Placement Probability Engine (MVP Statistical Model)
-    
-    Weights for Probability:
-    - Skill Readiness: 35%
-    - Projects: 20% (Max 5 projects)
-    - Internships: 15% (Binary)
+    Enhanced Placement Probability Engine
+    Weights:
+    - Skill Readiness: 30%
+    - Projects: 15%
+    - Internships: 25% (Factoring Type & Duration)
     - Communication: 10%
     - Core Subjects: 20%
     """
     
-    skill_score = (max(0, min(100, skill_readiness_score)) / 100) * 35
-    proj_score = (min(5, project_count) / 5) * 20
-    intern_score = 15 if internship_status else 0
+    skill_score = (max(0, min(100, skill_readiness_score)) / 100) * 30
+    proj_score = (min(5, project_count) / 5) * 15
+    
+    # Internship Scoring (Max 25%)
+    intern_score = 0
+    if internship_status:
+        # Base status
+        intern_score += 10 
+        # Type bonus
+        type_bonus = {"Technical": 10, "Industrial": 8, "Research": 7, "Corporate": 5}.get(internship_type, 0)
+        intern_score += type_bonus
+        # Duration bonus (Max 5%)
+        duration_bonus = min(5, internship_duration)
+        intern_score += duration_bonus
+
     comm_score = (max(0, min(10, communication_rating)) / 10) * 10
     core_score = (max(0, min(100, core_subject_marks)) / 100) * 20
     
@@ -33,15 +46,18 @@ def predict_placement_probability(
         suggestions.append("Build more full-stack or domain-specific projects to showcase practical skills.")
     if not internship_status:
         suggestions.append("Apply for summer internships or open-source programs to gain industry experience.")
+    elif internship_duration < 3:
+        suggestions.append("Aim for longer internships (3+ months) to gain deeper professional exposure.")
+    
     if communication_rating < 7:
         suggestions.append("Participate in mock interviews and group discussions to improve communication skills.")
     if core_subject_marks < 65:
-        suggestions.append("Revise core CS subjects (OS, DBMS, CN, DSA) for technical rounds.")
+        suggestions.append("Revise core subjects for technical rounds.")
     
     if len(suggestions) == 0:
-        suggestions.append("Profile looks great! Focus on advanced competitive programming or system design.")
+        suggestions.append("Profile looks great! Focus on specialized certifications or system design.")
         
-    confidence_score = 85.5 # Static MVP baseline based on sample data variance
+    confidence_score = 88.0 
 
     return {
         "placement_probability": round(probability, 2),

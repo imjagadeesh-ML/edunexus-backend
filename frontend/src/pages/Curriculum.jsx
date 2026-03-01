@@ -9,52 +9,36 @@ import {
 
 // Career path data for the Exploration Map modal
 const EXPLORATION_DATA = {
-    CS101: {
-        careerPaths: [
-            { role: 'Backend Developer', steps: ['Arrays & Trees', 'Graph Algorithms', 'System Design', 'API Development'], salary: '12–22 LPA' },
-            { role: 'Competitive Programmer', steps: ['DSA Mastery', 'Contest Practice', 'Open Source', 'Top Company'], salary: '18–35 LPA' },
-            { role: 'Software Engineer (FAANG)', steps: ['DSA Fluency', 'LeetCode Hard', 'System Design', 'Behavioural Prep'], salary: '25–60 LPA' },
-        ],
-        resources: [
-            { name: 'CLRS — Introduction to Algorithms', url: 'https://mitpress.mit.edu/books/introduction-algorithms' },
-            { name: 'NeetCode DSA Roadmap', url: 'https://neetcode.io/roadmap' },
-            { name: 'LeetCode', url: 'https://leetcode.com' },
-        ],
-    },
-    CS102: {
-        careerPaths: [
-            { role: 'Data Scientist', steps: ['Core Python', 'NumPy & Pandas', 'Scikit-learn', 'ML Projects'], salary: '15–30 LPA' },
-            { role: 'Backend Developer', steps: ['Flask / FastAPI', 'REST APIs', 'ORM', 'Docker'], salary: '12–25 LPA' },
-            { role: 'Automation Engineer', steps: ['Scripting', 'Selenium', 'CI/CD', 'Cloud Deployment'], salary: '10–18 LPA' },
-        ],
-        resources: [
-            { name: 'Python Official Docs', url: 'https://docs.python.org/3/' },
-            { name: 'Real Python', url: 'https://realpython.com' },
-            { name: 'FastAPI Documentation', url: 'https://fastapi.tiangolo.com' },
-        ],
-    },
-    CS301: {
-        careerPaths: [
-            { role: 'ML Engineer', steps: ['Math Foundations', 'Core ML Algorithms', 'Deep Learning', 'Production ML'], salary: '18–40 LPA' },
-            { role: 'Data Scientist', steps: ['EDA', 'Feature Engineering', 'Model Training', 'Business Insights'], salary: '15–30 LPA' },
-            { role: 'AI Researcher', steps: ['Graduate Study', 'Paper Reproduction', 'Novel Research', 'Publications'], salary: '25–60 LPA' },
-        ],
-        resources: [
-            { name: 'fast.ai Practical ML Course', url: 'https://course.fast.ai' },
-            { name: 'Scikit-learn Documentation', url: 'https://scikit-learn.org/stable/' },
-            { name: 'Kaggle Competitions', url: 'https://kaggle.com' },
-        ],
-    },
     CS401: {
         careerPaths: [
-            { role: 'DevOps Engineer', steps: ['Linux Basics', 'Docker & K8s', 'CI/CD', 'Cloud Infra'], salary: '12–24 LPA' },
-            { role: 'Cloud Architect', steps: ['AWS Certifications', 'Multi-cloud Strategy', 'Cost Optimisation', 'FinOps'], salary: '20–45 LPA' },
-            { role: 'Site Reliability Engineer', steps: ['Monitoring', 'Incident Response', 'Automation', 'SLA Management'], salary: '18–35 LPA' },
+            { role: 'DevOps Engineer', steps: ['Linux Basics', 'Docker & K8s', 'CI/CD', 'Cloud Infra'], salary: '8–15 LPA' },
+            { role: 'Cloud Architect', steps: ['AWS Certifications', 'Multi-cloud Strategy', 'Cost Optimisation', 'FinOps'], salary: '12–25 LPA' },
+            { role: 'Site Reliability Engineer', steps: ['Monitoring', 'Incident Response', 'Automation', 'SLA Management'], salary: '10–18 LPA' },
         ],
         resources: [
             { name: 'AWS Free Tier', url: 'https://aws.amazon.com/free/' },
             { name: 'Docker Documentation', url: 'https://docs.docker.com' },
             { name: 'Kubernetes Docs', url: 'https://kubernetes.io/docs/home/' },
+        ],
+    },
+    ECE101: {
+        careerPaths: [
+            { role: 'VLSI Engineer', steps: ['Digital Logic', 'Verilog/VHDL', 'Synthesis', 'Physical Design'], salary: '10–22 LPA' },
+            { role: 'Embedded Systems Dev', steps: ['8051/ARM', 'RTOS', 'Device Drivers', 'C Programming'], salary: '6–14 LPA' },
+        ],
+        resources: [
+            { name: 'NPTEL VLSI Course', url: '#' },
+            { name: 'ARM Education', url: '#' },
+        ],
+    },
+    MECH101: {
+        careerPaths: [
+            { role: 'Design Engineer', steps: ['Engineering Drawing', 'AutoCAD', 'SolidWorks', 'FEA'], salary: '5–12 LPA' },
+            { role: 'Robotics Engineer', steps: ['Control Systems', 'ROS', 'Actuators', 'Path Planning'], salary: '8–18 LPA' },
+        ],
+        resources: [
+            { name: 'AutoDesk Learning', url: '#' },
+            { name: 'SolidWorks Tutorials', url: '#' },
         ],
     },
     CS201: {
@@ -153,6 +137,26 @@ const ALL_MAPPINGS = [
         importance: 85,
         icon: <Database className="text-sky-500" />,
         color: "sky"
+    },
+    {
+        subject: "VLSI Design",
+        code: "ECE101",
+        credits: 4,
+        roles: ["Design Engineer", "Physical Design Engineer", "Verification Engineer"],
+        skills: ["MOS Transistor", "CMOS Circuits", "Verilog/VHDL", "Logical Synthesis", "ASIC Design", "FPGA Architecture"],
+        importance: 91,
+        icon: <Cpu className="text-rose-500" />,
+        color: "rose"
+    },
+    {
+        subject: "Engineering Design (CAD)",
+        code: "MECH101",
+        credits: 3,
+        roles: ["Design Engineer", "Automotive Engineer", "Production Engineer"],
+        skills: ["2D/3D Modeling", "AutoCAD", "SolidWorks", "Geometric Dimensioning", "Finite Element Analysis"],
+        importance: 87,
+        icon: <Settings className="text-amber-600" />,
+        color: "amber"
     }
 ];
 
@@ -161,6 +165,7 @@ const skillColorMap = {
     emerald: 'bg-emerald-50 text-emerald-700 border-emerald-100',
     amber: 'bg-amber-50 text-amber-700 border-amber-100',
     sky: 'bg-sky-50 text-sky-700 border-sky-100',
+    rose: 'bg-rose-50 text-rose-700 border-rose-100',
 };
 
 // ── Exploration Map Modal ─────────────────────────────────────────────────────

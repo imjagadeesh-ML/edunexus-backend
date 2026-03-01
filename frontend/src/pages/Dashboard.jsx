@@ -12,31 +12,49 @@ import {
     PolarRadiusAxis, ResponsiveContainer
 } from 'recharts';
 
-// All skills available for the radar
+// All skills available for the radar (CS, ECE, EEE, MECH, etc.)
 const ALL_SKILLS = [
-    { key: 'ds', label: 'Data Structures', score: 85 },
-    { key: 'python', label: 'Python', score: 92 },
-    { key: 'ml', label: 'Machine Learning', score: 78 },
-    { key: 'cloud', label: 'Cloud Computing', score: 65 },
-    { key: 'dbms', label: 'Database Systems', score: 88 },
-    { key: 'algo', label: 'Algorithms', score: 80 },
-    { key: 'dsa', label: 'DSA', score: 75 },
-    { key: 'sql', label: 'SQL', score: 82 },
-    { key: 'docker', label: 'Docker', score: 55 },
-    { key: 'api', label: 'REST APIs', score: 70 },
-    { key: 'oop', label: 'OOP', score: 87 },
-    { key: 'ai', label: 'AI Basics', score: 68 },
+    // Computing (CS/IT)
+    { key: 'ds', label: 'Data Structures', score: 85, dept: 'CS' },
+    { key: 'python', label: 'Python', score: 92, dept: 'CS' },
+    { key: 'ml', label: 'Machine Learning', score: 78, dept: 'CS' },
+    { key: 'cloud', label: 'Cloud Computing', score: 65, dept: 'CS' },
+    { key: 'dbms', label: 'Database Systems', score: 88, dept: 'CS' },
+    { key: 'algo', label: 'Algorithms', score: 80, dept: 'CS' },
+    { key: 'sql', label: 'SQL', score: 82, dept: 'CS' },
+    { key: 'docker', label: 'Docker', score: 55, dept: 'CS' },
+    { key: 'api', label: 'REST APIs', score: 70, dept: 'CS' },
+    { key: 'oop', label: 'OOP', score: 87, dept: 'CS' },
+    { key: 'ai', label: 'AI Basics', score: 68, dept: 'CS' },
+
+    // ECE & EEE (Core Electronics)
+    { key: 'vlsi', label: 'VLSI Design', score: 72, dept: 'ECE' },
+    { key: 'embedded', label: 'Embedded Systems', score: 84, dept: 'ECE' },
+    { key: 'iot', label: 'IoT Architecture', score: 77, dept: 'ECE' },
+    { key: 'psp', label: 'Power Systems', score: 68, dept: 'EEE' },
+    { key: 'control', label: 'Control Systems', score: 81, dept: 'EEE' },
+    { key: 'analog', label: 'Analog Electronics', score: 75, dept: 'ECE' },
+
+    // Mechanical & Civil
+    { key: 'cad', label: 'CAD/AutoCAD', score: 88, dept: 'MECH' },
+    { key: 'robotics', label: 'Robotics & AI', score: 82, dept: 'MECH' },
+    { key: 'thermo', label: 'Thermodynamics', score: 70, dept: 'MECH' },
+    { key: 'manuf', label: 'Manufacturing', score: 65, dept: 'MECH' },
 ];
 
 const DEFAULT_SELECTED = new Set(['ds', 'python', 'ml', 'cloud', 'dbms']);
 
-// Role-to-Skill Requirement Mapping for dynamic insights
+// Role-to-Skill Requirement Mapping for multi-disciplinary insights
 const ROLE_REQUIREMENTS = {
     'Full Stack Engineer': ['ds', 'python', 'sql', 'api', 'oop'],
     'Data Scientist': ['python', 'ml', 'sql', 'dbms', 'ai'],
     'DevOps Engineer': ['cloud', 'docker', 'api', 'sql'],
     'AI Researcher': ['ml', 'ai', 'python', 'algo', 'ds'],
-    'Backend Developer': ['ds', 'dbms', 'api', 'python', 'sql']
+    'VLSI Engineer': ['vlsi', 'analog', 'embedded'],
+    'Embedded Dev': ['embedded', 'iot', 'analog', 'python'],
+    'Power Specialist': ['psp', 'control', 'analog'],
+    'Mechanical Designer': ['cad', 'robotics', 'thermo', 'manuf'],
+    'Robotics Engineer': ['robotics', 'control', 'embedded', 'python']
 };
 
 const Dashboard = () => {
@@ -54,8 +72,7 @@ const Dashboard = () => {
                 if (next.size <= 3) return prev; // minimum 3
                 next.delete(key);
             } else {
-                if (next.size >= 8) return prev; // maximum 8
-                next.add(key);
+                next.add(key); // Removed 8-skill limit
             }
             return next;
         });
@@ -65,14 +82,31 @@ const Dashboard = () => {
         .filter(s => selectedSkills.has(s.key))
         .map(s => ({ subject: s.label, A: s.score, fullMark: 100 }));
 
-    // Dynamic career fit calculation based on selected skills
+    // Dynamic career fit calculation with selection order weighting
     const calculateBestFit = () => {
         let bestRole = "Searching...";
         let maxMatch = -1;
 
+        // Convert set to array to maintain selection order (recently added at the end)
+        const selectedArray = Array.from(selectedSkills);
+
         Object.entries(ROLE_REQUIREMENTS).forEach(([role, reqs]) => {
-            const intersection = reqs.filter(r => selectedSkills.has(r));
-            const matchScore = (intersection.length / reqs.length) * 100;
+            let weightedSum = 0;
+            let possibleSum = 0;
+
+            reqs.forEach((req, idx) => {
+                const skillIndex = selectedArray.indexOf(req);
+                const weight = reqs.length - idx; // Role requirement priority
+                possibleSum += weight;
+
+                if (skillIndex !== -1) {
+                    // Expertise weight: Skills selected earlier have higher "knowledge weight"
+                    const expertiseMultiplier = 1 + (1 / (skillIndex + 1));
+                    weightedSum += weight * expertiseMultiplier;
+                }
+            });
+
+            const matchScore = (weightedSum / (possibleSum * 2)) * 100;
 
             if (matchScore > maxMatch) {
                 maxMatch = matchScore;
@@ -80,7 +114,7 @@ const Dashboard = () => {
             }
         });
 
-        return { role: bestRole, score: Math.round(maxMatch) };
+        return { role: bestRole, score: Math.min(Math.round(maxMatch), 100) };
     };
 
     const bestFit = calculateBestFit();
@@ -206,7 +240,7 @@ const Dashboard = () => {
                         <div className="mb-4">
                             <div className="flex justify-between items-center mb-2">
                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                                    <Settings size={12} /> Select skills (3–8)
+                                    <Settings size={12} /> Select skills (Unlimited)
                                 </p>
                                 <input
                                     type="text"

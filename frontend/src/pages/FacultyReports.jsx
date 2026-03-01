@@ -30,6 +30,8 @@ const reportData = {
 const FacultyReports = () => {
     const { user, logout } = useAuth();
     const [activeTab, setActiveTab] = useState('overview');
+    const [entryForm, setEntryForm] = useState({ roll_number: '', name: '', department: 'CS', cgpa: '' });
+    const [studentsList, setStudentsList] = useState([]);
 
     const initials = user?.name ? user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
 
@@ -38,7 +40,14 @@ const FacultyReports = () => {
         { id: 'subjects', label: 'Subject Analysis' },
         { id: 'risk', label: 'Risk & Burnout' },
         { id: 'placement', label: 'Placement Intel' },
+        { id: 'entry', label: 'Student Entry' },
     ];
+
+    const handleEntrySubmit = (e) => {
+        e.preventDefault();
+        setStudentsList([...studentsList, { ...entryForm, id: Date.now() }]);
+        setEntryForm({ roll_number: '', name: '', department: 'CS', cgpa: '' });
+    };
 
     return (
         <div className="min-h-screen bg-[#f8fafc] flex">
@@ -207,6 +216,92 @@ const FacultyReports = () => {
                             <h3 className="font-bold text-slate-800 mb-3">Overall Department Pass Rate</h3>
                             <p className="text-5xl font-black text-emerald-600">{reportData.passRate}%</p>
                             <p className="text-slate-500 text-sm mt-2">Based on current academic performance data</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Student Entry Tab */}
+                {activeTab === 'entry' && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="glass p-8 rounded-3xl border border-slate-100 shadow-sm">
+                            <h2 className="text-xl font-bold text-slate-800 mb-6">Enter Student Details</h2>
+                            <form onSubmit={handleEntrySubmit} className="space-y-4">
+                                <div>
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Roll Number</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. 21CS001"
+                                        className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                        value={entryForm.roll_number}
+                                        onChange={(e) => setEntryForm({ ...entryForm, roll_number: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Student Name</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Full Name"
+                                        className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                        value={entryForm.name}
+                                        onChange={(e) => setEntryForm({ ...entryForm, name: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Department</label>
+                                        <select
+                                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            value={entryForm.department}
+                                            onChange={(e) => setEntryForm({ ...entryForm, department: e.target.value })}
+                                        >
+                                            <option value="CS">Computer Science</option>
+                                            <option value="ECE">Electronics (ECE)</option>
+                                            <option value="EEE">EEE</option>
+                                            <option value="MECH">Mechanical</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">CGPA / Score</label>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="0–10"
+                                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            value={entryForm.cgpa}
+                                            onChange={(e) => setEntryForm({ ...entryForm, cgpa: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <button type="submit" className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95">
+                                    Add Student to Batch
+                                </button>
+                            </form>
+                        </div>
+
+                        <div className="glass p-8 rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+                            <h2 className="text-xl font-bold text-slate-800 mb-6 flex justify-between items-center">
+                                Batch Entries
+                                <span className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500">{studentsList.length} Students</span>
+                            </h2>
+                            <div className="flex-1 overflow-y-auto space-y-3">
+                                {studentsList.map(s => (
+                                    <div key={s.id} className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                        <div>
+                                            <p className="font-bold text-slate-800">{s.name}</p>
+                                            <p className="text-xs text-slate-500">{s.roll_number} · {s.department}</p>
+                                        </div>
+                                        <span className="text-primary-600 font-black">{s.cgpa}</span>
+                                    </div>
+                                ))}
+                                {studentsList.length === 0 && (
+                                    <div className="text-center py-20 text-slate-400 italic">
+                                        No student data entered yet.
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}

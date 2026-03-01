@@ -27,6 +27,8 @@ class PlacementInput(BaseModel):
     skill_readiness_score: float
     project_count: int
     internship_status: bool
+    internship_type: Optional[str] = "None"
+    internship_duration: Optional[int] = 0
     communication_rating: float
     core_subject_marks: float
 
@@ -61,6 +63,8 @@ def predict_placement(data: PlacementInput):
         skill_readiness_score=data.skill_readiness_score,
         project_count=data.project_count,
         internship_status=data.internship_status,
+        internship_type=data.internship_type,
+        internship_duration=data.internship_duration,
         communication_rating=data.communication_rating,
         core_subject_marks=data.core_subject_marks
     )

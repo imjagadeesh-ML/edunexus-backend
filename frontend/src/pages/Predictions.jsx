@@ -9,6 +9,8 @@ const Predictions = () => {
         skill_readiness_score: '',
         project_count: '',
         internship_status: false,
+        internship_type: 'Technical', // New field
+        internship_duration: '3', // New field (months)
         communication_rating: '',
         core_subject_marks: ''
     });
@@ -31,6 +33,8 @@ const Predictions = () => {
                 skill_readiness_score: parseFloat(form.skill_readiness_score),
                 project_count: parseInt(form.project_count),
                 internship_status: form.internship_status,
+                internship_type: form.internship_type,
+                internship_duration: parseInt(form.internship_duration),
                 communication_rating: parseFloat(form.communication_rating),
                 core_subject_marks: parseFloat(form.core_subject_marks),
             });
@@ -106,10 +110,43 @@ const Predictions = () => {
                                     />
                                 </div>
                             ))}
-                            <label className="flex items-center gap-3 cursor-pointer">
-                                <input type="checkbox" name="internship_status" checked={form.internship_status} onChange={handleChange} className="w-5 h-5 rounded accent-indigo-600" />
-                                <span className="text-sm font-semibold text-slate-600">I have completed an internship</span>
-                            </label>
+                            <div className="space-y-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <label className="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" name="internship_status" checked={form.internship_status} onChange={handleChange} className="w-5 h-5 rounded accent-indigo-600" />
+                                    <span className="text-sm font-bold text-slate-700">I have completed an internship</span>
+                                </label>
+
+                                {form.internship_status && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Internship Type</label>
+                                            <select
+                                                name="internship_type"
+                                                value={form.internship_type}
+                                                onChange={handleChange}
+                                                className="w-full p-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                                            >
+                                                <option value="Technical">Technical/IT</option>
+                                                <option value="Research">Research</option>
+                                                <option value="Industrial">Industrial (Core)</option>
+                                                <option value="Corporate">Corporate/Mgmt</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Duration (Months): {form.internship_duration}</label>
+                                            <input
+                                                type="range"
+                                                name="internship_duration"
+                                                min="1"
+                                                max="12"
+                                                value={form.internship_duration}
+                                                onChange={handleChange}
+                                                className="w-full accent-primary-500"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                             <button type="submit" disabled={loading} className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-60">
                                 {loading ? 'Calculating...' : 'Calculate Placement Score'}
                             </button>

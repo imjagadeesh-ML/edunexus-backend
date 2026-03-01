@@ -53,3 +53,8 @@ def get_dashboard_summary(student_id: int, db: Session = Depends(get_db)):
         "readiness": readiness,
         "placement": placement
     }
+
+@router.get("/subjects", response_model=List[schemas.SubjectOut])
+def read_subjects(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    subjects = crud.get_subjects(db, skip=skip, limit=limit)
+    return subjects

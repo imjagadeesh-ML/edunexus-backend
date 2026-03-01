@@ -113,3 +113,12 @@ class CampusNotificationOut(CampusNotificationBase):
     created_at: datetime
     class Config:
         from_attributes = True
+
+# --- AI Schemas ---
+class AIRequest(BaseModel):
+    material_id: int
+    question: str
+
+class AIResponse(BaseModel):
+    answer: str
+    material_title: str

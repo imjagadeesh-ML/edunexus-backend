@@ -6,7 +6,7 @@ import {
     LogOut, LayoutDashboard, Brain, Target,
     AlertTriangle, FileText, Loader2, BookOpen,
     Download, Share2, Upload, Plus, MessageSquare,
-    Search, Filter, ExternalLink, Megaphone, Clock
+    Search, Filter, ExternalLink, Megaphone, Clock, Sparkles, Send, X
 } from 'lucide-react';
 
 const Collaboration = () => {
@@ -19,6 +19,13 @@ const Collaboration = () => {
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
     const [filterCategory, setFilterCategory] = useState('All');
+
+    // AI Q&A State
+    const [showAI, setShowAI] = useState(false);
+    const [selectedMaterial, setSelectedMaterial] = useState(null);
+    const [aiQuestion, setAiQuestion] = useState('');
+    const [aiAnswer, setAiAnswer] = useState('');
+    const [aiLoading, setAiLoading] = useState(false);
 
     // Upload Form State
     const [showUpload, setShowUpload] = useState(false);
@@ -49,6 +56,32 @@ const Collaboration = () => {
         };
         fetchData();
     }, []);
+
+    const handleAskAI = async (e) => {
+        e.preventDefault();
+        if (!aiQuestion.trim() || !selectedMaterial) return;
+
+        setAiLoading(true);
+        setAiAnswer('');
+        try {
+            const res = await client.post('/collaboration/ai/ask', {
+                material_id: selectedMaterial.id,
+                question: aiQuestion
+            });
+            setAiAnswer(res.data.answer);
+        } catch (err) {
+            setAiAnswer("Sorry, I couldn't reach the AI at the moment. Please verify the backend is running and the API key is set.");
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
+    const openAIModal = (material) => {
+        setSelectedMaterial(material);
+        setShowAI(true);
+        setAiQuestion('');
+        setAiAnswer('');
+    };
 
     const handleUpload = async (e) => {
         e.preventDefault();
@@ -203,6 +236,9 @@ const Collaboration = () => {
                                             <button onClick={() => handleShare(mat)} className="p-2 hover:bg-slate-100 rounded-lg text-slate-500" title="Share">
                                                 <Share2 size={18} />
                                             </button>
+                                            <button onClick={() => openAIModal(mat)} className="p-2 hover:bg-primary-100 rounded-lg text-primary-500 font-bold flex items-center gap-1" title="Ask AI">
+                                                <Sparkles size={18} />
+                                            </button>
                                         </div>
                                     </div>
                                     <h3 className="text-xl font-bold text-slate-800 mb-1">{mat.title}</h3>
@@ -320,6 +356,76 @@ const Collaboration = () => {
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                )}
+
+                {/* AI Q&A Modal */}
+                {showAI && (
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                        <div className="glass w-full max-w-2xl flex flex-col h-[80vh] rounded-[2.5rem] shadow-2xl overflow-hidden animate-scale-up border-white">
+                            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white/50">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-primary-500 p-2 rounded-xl text-white shadow-lg shadow-primary-200">
+                                        <Sparkles size={20} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800 leading-tight">AI Study Assistant</h3>
+                                        <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Discussing: {selectedMaterial?.title}</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setShowAI(false)} className="p-2 hover:bg-slate-100 rounded-xl text-slate-400 transition-colors">
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-slate-50/30">
+                                {aiAnswer ? (
+                                    <div className="animate-fade-in">
+                                        <div className="bg-white p-6 rounded-[2rem] rounded-tl-none border border-slate-100 shadow-sm relative">
+                                            <div className="absolute -left-2 top-0 text-slate-100"><MessageSquare fill="currentColor" size={24} /></div>
+                                            <div className="prose prose-slate max-w-none text-slate-700 font-medium whitespace-pre-wrap">
+                                                {aiAnswer}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="h-full flex flex-col items-center justify-center text-center p-12 space-y-4">
+                                        <div className="w-20 h-20 bg-primary-50 rounded-full flex items-center justify-center text-primary-500 mb-2">
+                                            <Brain size={40} className="opacity-20" />
+                                        </div>
+                                        <p className="text-slate-400 font-bold text-lg">Ask me anything about this document.<br /><span className="text-sm font-medium opacity-60">I've analyzed the content for you.</span></p>
+                                    </div>
+                                )}
+                                {aiLoading && (
+                                    <div className="flex items-center gap-3 animate-pulse">
+                                        <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                                            <Loader2 size={16} className="animate-spin text-primary-500" />
+                                        </div>
+                                        <p className="text-sm font-bold text-primary-600 italic">Gemini is thinking...</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="p-6 bg-white border-t border-slate-100">
+                                <form onSubmit={handleAskAI} className="relative">
+                                    <input
+                                        autoFocus
+                                        className="w-full pl-6 pr-16 py-4 bg-slate-50 border border-slate-200 rounded-[1.5rem] focus:ring-2 focus:ring-primary-500 outline-none font-medium text-slate-700 shadow-inner"
+                                        placeholder="Explain the main conclusion of these notes..."
+                                        value={aiQuestion}
+                                        onChange={e => setAiQuestion(e.target.value)}
+                                        disabled={aiLoading}
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={aiLoading || !aiQuestion.trim()}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl shadow-lg transition-all active:scale-95 disabled:opacity-50"
+                                    >
+                                        {aiLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 )}

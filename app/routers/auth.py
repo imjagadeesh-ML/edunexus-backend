@@ -68,9 +68,10 @@ def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2Passw
     print(f"DEBUG: Password match for {user.email}: {match}")
     
     if not match:
+        print(f"DEBUG: Authentication FAILED for {user.email} - Password Hash mismatch")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail=f"Authentication failed: Incorrect password for {form_data.username}",
             headers={"WWW-Authenticate": "Bearer"},
         )
     

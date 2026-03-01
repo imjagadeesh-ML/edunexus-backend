@@ -9,7 +9,6 @@ from datetime import datetime
 from app import models, schemas
 from app.database import get_db
 from app.routers.auth import get_current_user
-from app.services.ai_assistant import ai_assistant
 
 router = APIRouter()
 
@@ -84,22 +83,4 @@ def create_notification(
     db_notification = models.CampusNotification(**notification.model_dump())
     db.add(db_notification)
     db.commit()
-    db.refresh(db_notification)
     return db_notification
-
-@router.post("/ai/ask", response_model=schemas.AIResponse)
-async def ask_ai(
-    request: schemas.AIRequest,
-    db: Session = Depends(get_db),
-    current_user: models.Student = Depends(get_current_user)
-):
-    material = db.query(models.SharedMaterial).filter(models.SharedMaterial.id == request.material_id).first()
-    if not material:
-        raise HTTPException(status_code=404, detail="Material not found")
-        
-    answer = await ai_assistant.ask_about_material(db, request.material_id, request.question)
-    
-    return {
-        "answer": answer,
-        "material_title": material.title
-    }

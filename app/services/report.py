@@ -22,7 +22,7 @@ def generate_accreditation_report(
             "title": "Academic Intelligence & Performance Report",
             "department": department_name,
             "date": report_date,
-            "generated_by": "EduNexus AI Engine",
+            "generated_by": "StratAcade Engine",
             "framework_compliance": ["NAAC", "NBA"]
         },
         "executive_summary": {

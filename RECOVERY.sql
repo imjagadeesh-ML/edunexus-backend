@@ -1,4 +1,4 @@
--- EduNexus AI: COMPLETE RECOVERY SCRIPT
+-- StratAcade: COMPLETE RECOVERY SCRIPT
 -- This script ensures the Demo Student exists and has the correct password.
 -- Run this in the Supabase SQL Editor.
 

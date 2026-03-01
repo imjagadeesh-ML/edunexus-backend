@@ -71,7 +71,7 @@ const Predictions = () => {
             <div className="w-68 glass-dark text-white p-6 hidden lg:flex flex-col shadow-2xl">
                 <div className="mb-12 flex items-center gap-3 px-2">
                     <div className="bg-emerald-500 p-2 rounded-lg"><Brain className="text-white w-6 h-6" /></div>
-                    <h2 className="text-xl font-bold tracking-tight">EduNexus AI</h2>
+                    <h2 className="text-xl font-bold tracking-tight">StratAcade</h2>
                 </div>
                 <nav className="flex-1 space-y-2">
                     <SidebarLink icon={<LayoutDashboard size={20} />} label="Dashboard" href="/dashboard" />

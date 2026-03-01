@@ -1,4 +1,4 @@
--- EduNexus AI: Comprehensive Mock Data Seed Script
+-- StratAcade: Comprehensive Mock Data Seed Script
 -- Use this script in the Supabase SQL Editor to populate your database with realistic data.
 
 -- 1. Insert Subjects

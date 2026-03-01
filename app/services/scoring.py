@@ -9,7 +9,7 @@ def calculate_readiness_score(
     missing_skills: List[str] = None
 ) -> Dict[str, Any]:
     """
-    Skill Readiness Scoring Algorithm for EduNexus AI
+    Skill Readiness Scoring Algorithm for StratAcade
     
     Weights:
     - Average Marks: 30%

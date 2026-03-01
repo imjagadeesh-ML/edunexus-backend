@@ -85,7 +85,7 @@ const Collaboration = () => {
         if (navigator.share) {
             navigator.share({
                 title: material.title,
-                text: `Check out this ${material.category} on EduNexus AI!`,
+                text: `Check out this ${material.category} on StratAcade!`,
                 url: window.location.href
             });
         } else {
@@ -114,7 +114,7 @@ const Collaboration = () => {
                     <div className="bg-emerald-500 p-2 rounded-lg">
                         <Brain className="text-white w-6 h-6" />
                     </div>
-                    <h2 className="text-xl font-bold tracking-tight">EduNexus AI</h2>
+                    <h2 className="text-xl font-bold tracking-tight">StratAcade</h2>
                 </div>
 
                 <nav className="flex-1 space-y-2">

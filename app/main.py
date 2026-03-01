@@ -34,7 +34,7 @@ app.include_router(collaboration.router, prefix="/api/v1/collaboration", tags=["
 @app.get("/")
 def root():
     return {
-        "message": "Welcome to EduNexus AI API",
+        "message": "Welcome to StratAcade API",
         "version": "1.0.3",
         "deploy_time": "2026-02-26T00:50:00Z"
     }

@@ -1,4 +1,4 @@
--- EduNexus AI: Password Repair Script
+-- StratAcade: Password Repair Script
 -- Use this to fix the "Invalid Credentials" error for the demo account.
 
 UPDATE students 

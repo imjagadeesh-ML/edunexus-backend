@@ -1,6 +1,6 @@
-# EduNexus AI - Backend Deployment Guide
+# StratAcade - Backend Deployment Guide
 
-This guide covers deploying the FastAPI backend for EduNexus AI onto **Render** using a **Supabase PostgreSQL** database.
+This guide covers deploying the FastAPI backend for StratAcade onto **Render** using a **Supabase PostgreSQL** database.
 
 ## 1. Supabase PostgreSQL Setup
 1. Log in to [Supabase](https://supabase.com/).
@@ -14,7 +14,7 @@ This guide covers deploying the FastAPI backend for EduNexus AI onto **Render** 
 
 ## 2. GitHub Setup
 1. Create a clear `.gitignore` file (e.g. ignoring `__pycache__`, `venv`, `.env`).
-2. Push your EduNexus AI backend code to a GitHub repository.
+2. Push your StratAcade backend code to a GitHub repository.
 
 ## 3. Render Deployment
 1. Log in to [Render](https://render.com/).

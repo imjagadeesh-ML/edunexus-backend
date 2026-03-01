@@ -30,7 +30,7 @@ const Login = () => {
                         <LogIn className="text-white w-8 h-8" />
                     </div>
                 </div>
-                <h1 className="text-3xl font-bold text-center mb-2 text-slate-800">EduNexus AI</h1>
+                <h1 className="text-3xl font-bold text-center mb-2 text-slate-800">StratAcade</h1>
                 <p className="text-slate-500 text-center mb-8">Login to your dashboard</p>
 
                 {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4 border border-red-100">{error}</div>}

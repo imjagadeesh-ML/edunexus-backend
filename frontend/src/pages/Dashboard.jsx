@@ -178,7 +178,7 @@ const Dashboard = () => {
                     <div className="bg-emerald-500 p-2 rounded-lg">
                         <Brain className="text-white w-6 h-6" />
                     </div>
-                    <h2 className="text-xl font-bold tracking-tight">EduNexus AI</h2>
+                    <h2 className="text-xl font-bold tracking-tight">StratAcade</h2>
                 </div>
 
                 <nav className="flex-1 space-y-2">

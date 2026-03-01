@@ -8,6 +8,7 @@ from app.services.scoring import calculate_readiness_score
 from app.services.burnout import predictor
 from app.services.placement import predict_placement_probability
 from app.services.recommendation import get_recommendations_for_skills
+from app.services.roadmap import get_career_roadmap
 from app.services.report import generate_accreditation_report
 
 router = APIRouter()
@@ -82,3 +83,10 @@ def generate_report(data: ReportInput):
         faculty_heatmap_summary=data.faculty_heatmap_summary,
         top_industry_roles=data.top_industry_roles
     )
+
+@router.get("/roadmap/{student_id}")
+def get_roadmap(student_id: int, db: Session = Depends(get_db)):
+    result = get_career_roadmap(db, student_id)
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result

@@ -11,6 +11,7 @@ const Predictions = () => {
     });
     const [result, setResult] = useState(null);
     const [recommendations, setRecommendations] = useState([]);
+    const [roadmap, setRoadmap] = useState(null);
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(false);
     const [error, setError] = useState('');
@@ -28,10 +29,13 @@ const Predictions = () => {
                 student_id: user.id,
             });
             setResult(res.data);
-            // After prediction, get recommendations for missing skills if any
+
+            // Fetch Roadmap
+            const roadmapRes = await client.get(`/predictions/roadmap/${user.id}`);
+            setRoadmap(roadmapRes.data);
+
             if (res.data.suggested_improvements?.length > 0) {
-                // Heuristic: If they need to upskill, we fetch resources
-                const recRes = await client.post('/predictions/recommendations', ["Python", "React", "SQL"]); // Demo skills
+                const recRes = await client.post('/predictions/recommendations', ["Python", "React", "SQL"]);
                 setRecommendations(recRes.data);
             }
         } catch (err) {
@@ -97,7 +101,7 @@ const Predictions = () => {
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-12">
                     {/* Automation Panel */}
                     <div className="space-y-6">
                         <div className="glass p-8 rounded-3xl shadow-sm border border-emerald-100 bg-emerald-50/30">
@@ -197,6 +201,50 @@ const Predictions = () => {
                         )}
                     </div>
                 </div>
+
+                {/* Journey Roadmap Section */}
+                {roadmap && (
+                    <div className="animate-slide-up">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-slate-800">Your B.Tech Skill Journey</h2>
+                            <div className="flex gap-4">
+                                <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">Completed: {roadmap.status_summary.completed}</span>
+                                <span className="flex items-center gap-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg">Active: {roadmap.status_summary.active}</span>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            {[1, 2, 3, 4].map(year => (
+                                <div key={year} className={`p-6 rounded-3xl border ${roadmap.current_year === year ? 'border-primary-200 bg-primary-50/20 ring-4 ring-primary-500/5' : 'border-slate-100 bg-white shadow-sm'}`}>
+                                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex justify-between">
+                                        Year {year}
+                                        {roadmap.current_year === year && <span className="text-primary-600">You are here</span>}
+                                    </p>
+                                    <div className="space-y-3">
+                                        {roadmap.roadmap[year.toString()].map((skill, idx) => (
+                                            <div key={idx} className="flex flex-col gap-1">
+                                                <div className="flex items-center justify-between text-sm font-bold text-slate-700">
+                                                    <span>{skill.name}</span>
+                                                    {skill.status === 'Completed' ? (
+                                                        <Star size={12} className="text-amber-400 fill-amber-400" />
+                                                    ) : skill.status === 'In Progress' ? (
+                                                        <TrendingUp size={12} className="text-indigo-500" />
+                                                    ) : null}
+                                                </div>
+                                                <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                                    <div
+                                                        className={`h-full rounded-full transition-all duration-1000 ${skill.status === 'Completed' ? 'bg-emerald-500 w-full' :
+                                                                skill.status === 'In Progress' ? 'bg-indigo-500 w-1/2' : 'bg-slate-200 w-0'
+                                                            }`}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

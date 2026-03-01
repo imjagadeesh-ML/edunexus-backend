@@ -13,6 +13,7 @@ class StudentCreate(StudentBase):
 
 class StudentOut(StudentBase):
     id: int
+    current_year: int
     created_at: datetime
     class Config:
         from_attributes = True
@@ -27,6 +28,17 @@ class SubjectCreate(SubjectBase):
     pass
 
 class SubjectOut(SubjectBase):
+    id: int
+    class Config:
+        from_attributes = True
+
+# --- Skill Schemas ---
+class SkillBase(BaseModel):
+    name: str
+    academic_year: int
+    description: Optional[str] = None
+
+class SkillOut(SkillBase):
     id: int
     class Config:
         from_attributes = True

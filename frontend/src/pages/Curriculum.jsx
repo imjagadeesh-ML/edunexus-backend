@@ -94,103 +94,46 @@ const ALL_MAPPINGS = [
     {
         subject: "Data Structures & Algorithms",
         code: "CS101",
+        year: 1,
         credits: 4,
-        roles: ["Full Stack Engineer", "Backend Developer", "Software Engineer", "Competitive Programmer"],
-        skills: [
-            "Arrays & Strings", "Linked Lists", "Stacks & Queues", "Trees & Graphs",
-            "Dynamic Programming", "Recursion", "Sorting & Searching", "Hashing",
-            "Heaps & Priority Queues", "Algorithm Design", "Time Complexity Analysis",
-            "Space Complexity", "Greedy Algorithms", "Backtracking", "Memory Management"
-        ],
+        roles: ["Software Engineer", "Competitive Programmer"],
+        skills: ["Arrays", "Linked Lists", "Stacks", "Trees", "Sorting"],
         importance: 95,
         icon: <Code className="text-indigo-500" />,
         color: "indigo"
     },
     {
-        subject: "Python Programming",
-        code: "CS102",
+        subject: "Computer Networks",
+        code: "CS202",
+        year: 2,
         credits: 3,
-        roles: ["Data Scientist", "Software Engineer", "Automation Engineer", "Backend Developer"],
-        skills: [
-            "Core Python Syntax", "OOP in Python", "File I/O", "Exception Handling",
-            "List Comprehensions", "Generators & Iterators", "Decorators", "Context Managers",
-            "Multithreading", "Multiprocessing", "Regex", "Virtual Environments",
-            "Data Processing with Pandas", "Scripting & Automation", "Unit Testing (pytest)",
-            "REST API Integration", "pip & Package Management"
-        ],
-        importance: 88,
-        icon: <Globe className="text-emerald-500" />,
-        color: "emerald"
+        roles: ["Network Engineer", "Backend Developer"],
+        skills: ["OSI Model", "TCP/IP", "HTTP/HTTPS", "DNS", "Subnetting"],
+        importance: 82,
+        icon: <Globe className="text-blue-500" />,
+        color: "sky"
     },
     {
         subject: "Machine Learning",
         code: "CS301",
+        year: 3,
         credits: 4,
-        roles: ["AI Researcher", "Data Scientist", "ML Engineer", "NLP Engineer"],
-        skills: [
-            "Linear Regression", "Logistic Regression", "Decision Trees", "Random Forests",
-            "SVM", "K-Means Clustering", "KNN", "Gradient Boosting (XGBoost)",
-            "Neural Networks (Basics)", "Model Evaluation (Precision, Recall, F1)",
-            "Cross-Validation", "Feature Engineering", "Overfitting & Regularization",
-            "Scikit-learn", "Matplotlib & Seaborn", "Pandas & NumPy",
-            "PCA", "Bias-Variance Tradeoff"
-        ],
+        roles: ["ML Engineer", "Data Scientist"],
+        skills: ["Regression", "Neural Networks", "Clustering", "Scikit-Learn"],
         importance: 92,
         icon: <Cpu className="text-amber-500" />,
         color: "amber"
     },
     {
-        subject: "Cloud Computing",
+        subject: "Cloud Architecture",
         code: "CS401",
+        year: 4,
         credits: 3,
-        roles: ["DevOps Engineer", "Cloud Architect", "Backend Developer", "SRE"],
-        skills: [
-            "Cloud Fundamentals (IaaS, PaaS, SaaS)", "AWS Core Services (EC2, S3, RDS)",
-            "Google Cloud Platform Basics", "Azure Overview", "Containerization with Docker",
-            "Kubernetes Basics", "CI/CD Pipelines", "Infrastructure as Code (Terraform)",
-            "Serverless Computing (Lambda)", "Load Balancing", "Auto Scaling",
-            "Cloud Networking (VPC, Subnets)", "IAM & Security Policies",
-            "Monitoring & Logging (CloudWatch)", "Cost Optimization"
-        ],
-        importance: 78,
-        icon: <Cloud className="text-sky-500" />,
-        color: "sky"
-    },
-    {
-        subject: "Database Systems",
-        code: "CS201",
-        credits: 4,
-        roles: ["Database Administrator", "Backend Engineer", "Data Engineer", "Full Stack Engineer"],
-        skills: [
-            "Relational Model & ERD", "SQL (SELECT, JOIN, GROUP BY, Subqueries)", "Normalization (1NF–3NF, BCNF)",
-            "Indexing & Query Optimization", "Transactions & ACID Properties",
-            "Concurrency Control", "Locks & Deadlocks", "Stored Procedures & Triggers",
-            "Views & Materialized Views", "PostgreSQL", "MySQL", "NoSQL Concepts (MongoDB)",
-            "Schema Design", "Backup & Recovery", "ORMs (SQLAlchemy, Prisma)"
-        ],
-        importance: 85,
-        icon: <Database className="text-sky-500" />,
-        color: "sky"
-    },
-    {
-        subject: "VLSI Design",
-        code: "ECE101",
-        credits: 4,
-        roles: ["Design Engineer", "Physical Design Engineer", "Verification Engineer"],
-        skills: ["MOS Transistor", "CMOS Circuits", "Verilog/VHDL", "Logical Synthesis", "ASIC Design", "FPGA Architecture"],
-        importance: 91,
-        icon: <Cpu className="text-rose-500" />,
-        color: "rose"
-    },
-    {
-        subject: "Engineering Design (CAD)",
-        code: "MECH101",
-        credits: 3,
-        roles: ["Design Engineer", "Automotive Engineer", "Production Engineer"],
-        skills: ["2D/3D Modeling", "AutoCAD", "SolidWorks", "Geometric Dimensioning", "Finite Element Analysis"],
-        importance: 87,
-        icon: <Settings className="text-amber-600" />,
-        color: "amber"
+        roles: ["Cloud Architect", "DevOps Engineer"],
+        skills: ["AWS", "Kubernetes", "Docker", "Terraform", "Serverless"],
+        importance: 88,
+        icon: <Cloud className="text-emerald-500" />,
+        color: "emerald"
     }
 ];
 
@@ -305,6 +248,11 @@ const Curriculum = () => {
         m.skills.some(s => s.toLowerCase().includes(search.toLowerCase()))
     );
 
+    const groupedByYear = [1, 2, 3, 4].map(year => ({
+        year,
+        items: filtered.filter(m => m.year === year)
+    }));
+
     return (
         <div className="min-h-screen bg-[#f8fafc] flex">
             {/* Sidebar */}
@@ -343,88 +291,95 @@ const Curriculum = () => {
                     />
                 </div>
 
-                <div className="grid grid-cols-1 gap-6">
-                    {filtered.map((item) => {
-                        const isExpanded = expanded[item.code];
-                        const visibleSkills = isExpanded ? item.skills : item.skills.slice(0, 6);
-                        const hasMore = item.skills.length > 6;
-                        const tagClass = skillColorMap[item.color] || skillColorMap.indigo;
+                <div className="space-y-12">
+                    {groupedByYear.map(({ year, items }) => items.length > 0 && (
+                        <div key={year}>
+                            <h2 className="text-2xl font-bold text-slate-700 mb-6 flex items-center gap-4">
+                                <span className="w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm">Y{year}</span>
+                                {year === 1 ? '1st Year: Foundations' : year === 2 ? '2nd Year: Core Systems' : year === 3 ? '3rd Year: Specialization' : 'Final Year: Mastery'}
+                            </h2>
+                            <div className="grid grid-cols-1 gap-6">
+                                {items.map((item) => {
+                                    const isExpanded = expanded[item.code];
+                                    const visibleSkills = isExpanded ? item.skills : item.skills.slice(0, 6);
+                                    const hasMore = item.skills.length > 6;
+                                    const tagClass = skillColorMap[item.color] || skillColorMap.indigo;
 
-                        return (
-                            <div key={item.code} className="glass p-8 rounded-3xl shadow-sm border border-slate-100 group hover:shadow-xl transition-all duration-300">
-                                <div className="flex flex-col lg:flex-row gap-8">
-                                    <div className="flex-shrink-0">
-                                        <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-inner group-hover:scale-110 transition-transform">
-                                            {item.icon}
-                                        </div>
-                                    </div>
+                                    return (
+                                        <div key={item.code} className="glass p-8 rounded-3xl shadow-sm border border-slate-100 group hover:shadow-xl transition-all duration-300">
+                                            <div className="flex flex-col lg:flex-row gap-8">
+                                                <div className="flex-shrink-0">
+                                                    <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-inner group-hover:scale-110 transition-transform">
+                                                        {item.icon}
+                                                    </div>
+                                                </div>
 
-                                    <div className="flex-1">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <div>
-                                                <span className="text-xs font-bold text-primary-600 bg-primary-50 px-2 py-1 rounded uppercase mb-2 inline-block tracking-widest">{item.code}</span>
-                                                <h3 className="text-2xl font-bold text-slate-800">{item.subject}</h3>
-                                                <p className="text-sm text-slate-400 mt-0.5">{item.credits} Credits</p>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className="text-xs text-slate-400 font-bold uppercase mb-1">Industry Impact</p>
-                                                <p className="text-xl font-black text-emerald-600">{item.importance}%</p>
-                                            </div>
-                                        </div>
+                                                <div className="flex-1">
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <div>
+                                                            <span className="text-xs font-bold text-primary-600 bg-primary-50 px-2 py-1 rounded uppercase mb-2 inline-block tracking-widest">{item.code}</span>
+                                                            <h3 className="text-2xl font-bold text-slate-800">{item.subject}</h3>
+                                                            <p className="text-sm text-slate-400 mt-0.5">{item.credits} Credits</p>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="text-xs text-slate-400 font-bold uppercase mb-1">Industry Impact</p>
+                                                            <p className="text-xl font-black text-emerald-600">{item.importance}%</p>
+                                                        </div>
+                                                    </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
-                                            {/* Roles */}
-                                            <div>
-                                                <p className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Key Industry Roles</p>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {item.roles.map((role, rIdx) => (
-                                                        <span key={rIdx} className="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-semibold rounded-lg flex items-center gap-1.5">
-                                                            {role} <ArrowRight size={12} className="text-slate-400" />
-                                                        </span>
-                                                    ))}
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
+                                                        <div>
+                                                            <p className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Key Industry Roles</p>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {item.roles.map((role, rIdx) => (
+                                                                    <span key={rIdx} className="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-semibold rounded-lg flex items-center gap-1.5">
+                                                                        {role} <ArrowRight size={12} className="text-slate-400" />
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <div className="flex justify-between items-center mb-3">
+                                                                <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">All Required Skills</p>
+                                                                <span className="text-xs font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full">{item.skills.length} skills</span>
+                                                            </div>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {visibleSkills.map((skill, sIdx) => (
+                                                                    <span key={sIdx} className={`px-3 py-1.5 text-xs font-bold rounded-lg border ${tagClass}`}>
+                                                                        {skill}
+                                                                    </span>
+                                                                ))}
+                                                                {hasMore && (
+                                                                    <button
+                                                                        onClick={() => toggleExpand(item.code)}
+                                                                        className="px-3 py-1.5 text-xs font-bold rounded-lg border bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 transition-all"
+                                                                    >
+                                                                        {isExpanded ? '▲ Show less' : `+${item.skills.length - 6} more`}
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center justify-center lg:pl-8 lg:border-l border-slate-100">
+                                                    <button
+                                                        onClick={() => setExplorationItem(item)}
+                                                        className="flex items-center gap-2 text-primary-600 font-bold hover:text-primary-700 transition-all whitespace-nowrap hover:gap-3 group/btn"
+                                                    >
+                                                        <Map size={18} className="group-hover/btn:scale-110 transition-transform" />
+                                                        Exploration Map
+                                                        <ChevronRight size={16} />
+                                                    </button>
                                                 </div>
                                             </div>
-
-                                            {/* Skills */}
-                                            <div>
-                                                <div className="flex justify-between items-center mb-3">
-                                                    <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">All Required Skills</p>
-                                                    <span className="text-xs font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full">{item.skills.length} skills</span>
-                                                </div>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {visibleSkills.map((skill, sIdx) => (
-                                                        <span key={sIdx} className={`px-3 py-1.5 text-xs font-bold rounded-lg border ${tagClass}`}>
-                                                            {skill}
-                                                        </span>
-                                                    ))}
-                                                    {hasMore && (
-                                                        <button
-                                                            onClick={() => toggleExpand(item.code)}
-                                                            className="px-3 py-1.5 text-xs font-bold rounded-lg border bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 transition-all"
-                                                        >
-                                                            {isExpanded ? '▲ Show less' : `+${item.skills.length - 6} more`}
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </div>
                                         </div>
-                                    </div>
-
-                                    {/* Exploration Map Button */}
-                                    <div className="flex items-center justify-center lg:pl-8 lg:border-l border-slate-100">
-                                        <button
-                                            onClick={() => setExplorationItem(item)}
-                                            className="flex items-center gap-2 text-primary-600 font-bold hover:text-primary-700 transition-all whitespace-nowrap hover:gap-3 group/btn"
-                                        >
-                                            <Map size={18} className="group-hover/btn:scale-110 transition-transform" />
-                                            Exploration Map
-                                            <ChevronRight size={16} />
-                                        </button>
-                                    </div>
-                                </div>
+                                    );
+                                })}
                             </div>
-                        );
-                    })}
+                        </div>
+                    ))}
 
                     {filtered.length === 0 && (
                         <div className="text-center py-20 text-slate-400">

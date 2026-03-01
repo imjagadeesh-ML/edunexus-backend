@@ -260,6 +260,7 @@ const Dashboard = () => {
                                             : 'bg-white text-slate-400 border-slate-200 hover:border-primary-300 hover:text-primary-600'
                                             }`}
                                     >
+                                        <span className="opacity-70 font-normal mr-1">{s.dept}</span>
                                         {s.label}{selectedSkills.has(s.key) && <span className="ml-1 opacity-80">✓</span>}
                                     </button>
                                 ))}

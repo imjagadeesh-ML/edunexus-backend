@@ -4,7 +4,7 @@ import {
     Brain, Target, LayoutDashboard, AlertTriangle,
     FileText, BookOpen, LogOut, Search,
     Code, Database, Cpu, Globe, ArrowRight, Cloud,
-    X, Map, ChevronRight, ExternalLink
+    X, Map, ChevronRight, ExternalLink, Settings
 } from 'lucide-react';
 
 // Career path data for the Exploration Map modal

@@ -81,3 +81,35 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+# --- Collaboration Schemas ---
+class SharedMaterialBase(BaseModel):
+    title: str
+    description: Optional[str] = None
+    category: str
+    subject_id: int
+
+class SharedMaterialCreate(SharedMaterialBase):
+    file_path: str
+    uploader_id: int
+
+class SharedMaterialOut(SharedMaterialBase):
+    id: int
+    file_path: str
+    uploader_id: int
+    created_at: datetime
+    class Config:
+        from_attributes = True
+
+class CampusNotificationBase(BaseModel):
+    title: str
+    content: str
+    priority: str = "Normal"
+    category: str
+
+class CampusNotificationOut(CampusNotificationBase):
+    id: int
+    expires_at: Optional[datetime] = None
+    created_at: datetime
+    class Config:
+        from_attributes = True

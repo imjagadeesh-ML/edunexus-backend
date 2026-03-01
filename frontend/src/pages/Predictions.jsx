@@ -75,6 +75,7 @@ const Predictions = () => {
                 </div>
                 <nav className="flex-1 space-y-2">
                     <SidebarLink icon={<LayoutDashboard size={20} />} label="Dashboard" href="/dashboard" />
+                    <SidebarLink icon={<Brain size={20} />} label="Collaboration Hub" href="/collaboration" />
                     <SidebarLink icon={<Target size={20} />} label="Predictions" href="/predictions" active />
                     <SidebarLink icon={<AlertTriangle size={20} />} label="Burnout Alerts" href="/burnout" />
                     <SidebarLink icon={<FileText size={20} />} label="Faculty Reports" href="/reports" />
@@ -233,7 +234,7 @@ const Predictions = () => {
                                                 <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
                                                     <div
                                                         className={`h-full rounded-full transition-all duration-1000 ${skill.status === 'Completed' ? 'bg-emerald-500 w-full' :
-                                                                skill.status === 'In Progress' ? 'bg-indigo-500 w-1/2' : 'bg-slate-200 w-0'
+                                                            skill.status === 'In Progress' ? 'bg-indigo-500 w-1/2' : 'bg-slate-200 w-0'
                                                             }`}
                                                     />
                                                 </div>

@@ -64,6 +64,7 @@ const BurnoutAlerts = () => {
                 </div>
                 <nav className="flex-1 space-y-2">
                     <SidebarLink icon={<LayoutDashboard size={20} />} label="Dashboard" href="/dashboard" />
+                    <SidebarLink icon={<Brain size={20} />} label="Collaboration Hub" href="/collaboration" />
                     <SidebarLink icon={<Target size={20} />} label="Predictions" href="/predictions" />
                     <SidebarLink icon={<AlertTriangle size={20} />} label="Burnout Alerts" href="/burnout" active />
                     <SidebarLink icon={<FileText size={20} />} label="Faculty Reports" href="/reports" />

@@ -19,6 +19,7 @@ class Student(Base):
     lab_performance = relationship("LabPerformance", back_populates="student")
     readiness_score = relationship("ReadinessScore", back_populates="student", uselist=False)
     placement_prediction = relationship("PlacementPrediction", back_populates="student", uselist=False)
+    shared_materials = relationship("SharedMaterial", back_populates="uploader")
 
 class Subject(Base):
     __tablename__ = "subjects"
@@ -147,3 +148,29 @@ class Resource(Base):
     title = Column(String)
     url = Column(String)
     type = Column(String) # Video, Article, Course
+
+class SharedMaterial(Base):
+    __tablename__ = "shared_materials"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True)
+    description = Column(Text, nullable=True)
+    category = Column(String) # Notes, Lab, Assignments, PrevPapers
+    file_path = Column(String) # Path to local storage or URL
+    subject_id = Column(Integer, ForeignKey("subjects.id"))
+    uploader_id = Column(Integer, ForeignKey("students.id"))
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    subject = relationship("Subject")
+    uploader = relationship("Student", back_populates="shared_materials")
+
+class CampusNotification(Base):
+    __tablename__ = "campus_notifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True)
+    content = Column(Text)
+    priority = Column(String, default="Normal") # Low, Normal, High, Urgent
+    category = Column(String) # Academic, Event, Placement, General
+    expires_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)

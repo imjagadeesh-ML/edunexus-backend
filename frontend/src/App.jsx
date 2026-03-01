@@ -8,6 +8,7 @@ import Curriculum from './pages/Curriculum';
 import Predictions from './pages/Predictions';
 import BurnoutAlerts from './pages/BurnoutAlerts';
 import FacultyReports from './pages/FacultyReports';
+import Collaboration from './pages/Collaboration';
 
 import SplashScreen from './components/SplashScreen';
 
@@ -30,6 +31,7 @@ function App() {
           <Route path="/predictions" element={<ProtectedRoute><Predictions /></ProtectedRoute>} />
           <Route path="/burnout" element={<ProtectedRoute><BurnoutAlerts /></ProtectedRoute>} />
           <Route path="/reports" element={<ProtectedRoute><FacultyReports /></ProtectedRoute>} />
+          <Route path="/collaboration" element={<ProtectedRoute><Collaboration /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
       </Router>

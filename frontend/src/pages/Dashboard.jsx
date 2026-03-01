@@ -60,14 +60,12 @@ const Dashboard = () => {
 
         const fetchDashboardData = async () => {
             try {
-                const [readinessRes, placementRes] = await Promise.allSettled([
-                    client.get(`/students/${user.id}/readiness`),
-                    client.get(`/students/${user.id}/placement`)
-                ]);
+                const res = await client.get(`/students/${user.id}/dashboard-summary`);
+                const { readiness, placement } = res.data;
 
                 setStats({
-                    readiness: readinessRes.status === 'fulfilled' ? readinessRes.value.data : null,
-                    placement: placementRes.status === 'fulfilled' ? placementRes.value.data : null,
+                    readiness: readiness || null,
+                    placement: placement || null,
                 });
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
@@ -181,8 +179,8 @@ const Dashboard = () => {
                                         key={s.key}
                                         onClick={() => toggleSkill(s.key)}
                                         className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all border ${selectedSkills.has(s.key)
-                                                ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
-                                                : 'bg-white text-slate-500 border-slate-200 hover:border-primary-300 hover:text-primary-600'
+                                            ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
+                                            : 'bg-white text-slate-500 border-slate-200 hover:border-primary-300 hover:text-primary-600'
                                             }`}
                                     >
                                         {s.label}{selectedSkills.has(s.key) && <span className="ml-1 opacity-80">✓</span>}

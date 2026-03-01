@@ -3,10 +3,75 @@ import { useAuth } from '../context/AuthContext';
 import {
     Brain, Target, LayoutDashboard, AlertTriangle,
     FileText, BookOpen, LogOut, Search,
-    Code, Database, Cpu, Globe, ArrowRight, ExternalLink, Cloud
+    Code, Database, Cpu, Globe, ArrowRight, Cloud,
+    X, Map, ChevronRight, ExternalLink
 } from 'lucide-react';
 
-// Expanded curriculum data with full skills per subject
+// Career path data for the Exploration Map modal
+const EXPLORATION_DATA = {
+    CS101: {
+        careerPaths: [
+            { role: 'Backend Developer', steps: ['Arrays & Trees', 'Graph Algorithms', 'System Design', 'API Development'], salary: '12–22 LPA' },
+            { role: 'Competitive Programmer', steps: ['DSA Mastery', 'Contest Practice', 'Open Source', 'Top Company'], salary: '18–35 LPA' },
+            { role: 'Software Engineer (FAANG)', steps: ['DSA Fluency', 'LeetCode Hard', 'System Design', 'Behavioural Prep'], salary: '25–60 LPA' },
+        ],
+        resources: [
+            { name: 'CLRS — Introduction to Algorithms', url: 'https://mitpress.mit.edu/books/introduction-algorithms' },
+            { name: 'NeetCode DSA Roadmap', url: 'https://neetcode.io/roadmap' },
+            { name: 'LeetCode', url: 'https://leetcode.com' },
+        ],
+    },
+    CS102: {
+        careerPaths: [
+            { role: 'Data Scientist', steps: ['Core Python', 'NumPy & Pandas', 'Scikit-learn', 'ML Projects'], salary: '15–30 LPA' },
+            { role: 'Backend Developer', steps: ['Flask / FastAPI', 'REST APIs', 'ORM', 'Docker'], salary: '12–25 LPA' },
+            { role: 'Automation Engineer', steps: ['Scripting', 'Selenium', 'CI/CD', 'Cloud Deployment'], salary: '10–18 LPA' },
+        ],
+        resources: [
+            { name: 'Python Official Docs', url: 'https://docs.python.org/3/' },
+            { name: 'Real Python', url: 'https://realpython.com' },
+            { name: 'FastAPI Documentation', url: 'https://fastapi.tiangolo.com' },
+        ],
+    },
+    CS301: {
+        careerPaths: [
+            { role: 'ML Engineer', steps: ['Math Foundations', 'Core ML Algorithms', 'Deep Learning', 'Production ML'], salary: '18–40 LPA' },
+            { role: 'Data Scientist', steps: ['EDA', 'Feature Engineering', 'Model Training', 'Business Insights'], salary: '15–30 LPA' },
+            { role: 'AI Researcher', steps: ['Graduate Study', 'Paper Reproduction', 'Novel Research', 'Publications'], salary: '25–60 LPA' },
+        ],
+        resources: [
+            { name: 'fast.ai Practical ML Course', url: 'https://course.fast.ai' },
+            { name: 'Scikit-learn Documentation', url: 'https://scikit-learn.org/stable/' },
+            { name: 'Kaggle Competitions', url: 'https://kaggle.com' },
+        ],
+    },
+    CS401: {
+        careerPaths: [
+            { role: 'DevOps Engineer', steps: ['Linux Basics', 'Docker & K8s', 'CI/CD', 'Cloud Infra'], salary: '12–24 LPA' },
+            { role: 'Cloud Architect', steps: ['AWS Certifications', 'Multi-cloud Strategy', 'Cost Optimisation', 'FinOps'], salary: '20–45 LPA' },
+            { role: 'Site Reliability Engineer', steps: ['Monitoring', 'Incident Response', 'Automation', 'SLA Management'], salary: '18–35 LPA' },
+        ],
+        resources: [
+            { name: 'AWS Free Tier', url: 'https://aws.amazon.com/free/' },
+            { name: 'Docker Documentation', url: 'https://docs.docker.com' },
+            { name: 'Kubernetes Docs', url: 'https://kubernetes.io/docs/home/' },
+        ],
+    },
+    CS201: {
+        careerPaths: [
+            { role: 'Database Administrator', steps: ['SQL Mastery', 'Performance Tuning', 'Backup & Recovery', 'High Availability'], salary: '10–20 LPA' },
+            { role: 'Data Engineer', steps: ['SQL + Python', 'ETL Pipelines', 'Data Warehousing', 'Cloud Databases'], salary: '14–28 LPA' },
+            { role: 'Backend Engineer', steps: ['ORM & Schema Design', 'Query Optimisation', 'Caching (Redis)', 'Microservices'], salary: '12–25 LPA' },
+        ],
+        resources: [
+            { name: 'PostgreSQL Tutorial', url: 'https://www.postgresqltutorial.com' },
+            { name: 'SQLZoo', url: 'https://sqlzoo.net' },
+            { name: 'MongoDB University', url: 'https://university.mongodb.com' },
+        ],
+    },
+};
+
+// Full curriculum data with all skills
 const ALL_MAPPINGS = [
     {
         subject: "Data Structures & Algorithms",
@@ -50,7 +115,7 @@ const ALL_MAPPINGS = [
             "Neural Networks (Basics)", "Model Evaluation (Precision, Recall, F1)",
             "Cross-Validation", "Feature Engineering", "Overfitting & Regularization",
             "Scikit-learn", "Matplotlib & Seaborn", "Pandas & NumPy",
-            "Principal Component Analysis (PCA)", "Bias-Variance Tradeoff"
+            "PCA", "Bias-Variance Tradeoff"
         ],
         importance: 92,
         icon: <Cpu className="text-amber-500" />,
@@ -98,10 +163,100 @@ const skillColorMap = {
     sky: 'bg-sky-50 text-sky-700 border-sky-100',
 };
 
+// ── Exploration Map Modal ─────────────────────────────────────────────────────
+const ExplorationModal = ({ item, onClose }) => {
+    const expData = EXPLORATION_DATA[item.code];
+    if (!expData) return null;
+
+    return (
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            onClick={onClose}
+        >
+            <div
+                className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto"
+                onClick={e => e.stopPropagation()}
+            >
+                {/* Modal Header */}
+                <div className="sticky top-0 bg-white rounded-t-3xl flex justify-between items-start p-8 border-b border-slate-100">
+                    <div>
+                        <span className="text-xs font-bold text-primary-600 bg-primary-50 px-2 py-1 rounded uppercase tracking-widest mb-2 inline-block">{item.code}</span>
+                        <h2 className="text-2xl font-extrabold text-slate-900">{item.subject}</h2>
+                        <p className="text-slate-400 text-sm mt-1 flex items-center gap-1"><Map size={14} /> Exploration Map</p>
+                    </div>
+                    <button onClick={onClose} className="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-700">
+                        <X size={22} />
+                    </button>
+                </div>
+
+                <div className="p-8 space-y-8">
+                    {/* Career Paths */}
+                    <div>
+                        <h3 className="text-lg font-bold text-slate-800 mb-4">Career Pathways</h3>
+                        <div className="space-y-4">
+                            {expData.careerPaths.map((path, i) => (
+                                <div key={i} className="glass p-5 rounded-2xl border border-slate-100">
+                                    <div className="flex justify-between items-center mb-3">
+                                        <p className="font-bold text-slate-800">{path.role}</p>
+                                        <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100">{path.salary}</span>
+                                    </div>
+                                    {/* Step-by-step path */}
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        {path.steps.map((step, sIdx) => (
+                                            <React.Fragment key={sIdx}>
+                                                <span className="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg">{step}</span>
+                                                {sIdx < path.steps.length - 1 && <ChevronRight size={14} className="text-slate-300 shrink-0" />}
+                                            </React.Fragment>
+                                        ))}
+                                        <span className="ml-1 text-xs font-bold text-primary-600">→ {path.role}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Learning Resources */}
+                    <div>
+                        <h3 className="text-lg font-bold text-slate-800 mb-4">Recommended Learning Resources</h3>
+                        <div className="space-y-2">
+                            {expData.resources.map((res, i) => (
+                                <a
+                                    key={i}
+                                    href={res.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between p-4 bg-slate-50 hover:bg-primary-50 border border-slate-100 hover:border-primary-200 rounded-xl transition-all group"
+                                >
+                                    <span className="font-semibold text-slate-700 group-hover:text-primary-700 text-sm">{res.name}</span>
+                                    <ExternalLink size={15} className="text-slate-300 group-hover:text-primary-500 transition-colors shrink-0" />
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* All Skills */}
+                    <div>
+                        <h3 className="text-lg font-bold text-slate-800 mb-4">All {item.skills.length} Required Skills</h3>
+                        <div className="flex flex-wrap gap-2">
+                            {item.skills.map((skill, i) => (
+                                <span key={i} className={`px-3 py-1.5 text-xs font-bold rounded-lg border ${skillColorMap[item.color]}`}>
+                                    {skill}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// ── Main Curriculum Page ──────────────────────────────────────────────────────
 const Curriculum = () => {
     const { logout } = useAuth();
     const [search, setSearch] = useState('');
     const [expanded, setExpanded] = useState({});
+    const [explorationItem, setExplorationItem] = useState(null);
 
     const toggleExpand = (code) => setExpanded(prev => ({ ...prev, [code]: !prev[code] }));
 
@@ -138,7 +293,6 @@ const Curriculum = () => {
                     <p className="text-slate-500 text-lg mt-1 font-medium italic">Every skill you'll need, mapped to the jobs that demand them.</p>
                 </header>
 
-                {/* Search */}
                 <div className="mb-8 relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                     <input
@@ -160,7 +314,6 @@ const Curriculum = () => {
                         return (
                             <div key={item.code} className="glass p-8 rounded-3xl shadow-sm border border-slate-100 group hover:shadow-xl transition-all duration-300">
                                 <div className="flex flex-col lg:flex-row gap-8">
-                                    {/* Icon */}
                                     <div className="flex-shrink-0">
                                         <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-inner group-hover:scale-110 transition-transform">
                                             {item.icon}
@@ -218,9 +371,15 @@ const Curriculum = () => {
                                         </div>
                                     </div>
 
+                                    {/* Exploration Map Button */}
                                     <div className="flex items-center justify-center lg:pl-8 lg:border-l border-slate-100">
-                                        <button className="flex items-center gap-2 text-primary-600 font-bold hover:text-primary-700 transition-colors whitespace-nowrap">
-                                            Exploration Map <ExternalLink size={18} />
+                                        <button
+                                            onClick={() => setExplorationItem(item)}
+                                            className="flex items-center gap-2 text-primary-600 font-bold hover:text-primary-700 transition-all whitespace-nowrap hover:gap-3 group/btn"
+                                        >
+                                            <Map size={18} className="group-hover/btn:scale-110 transition-transform" />
+                                            Exploration Map
+                                            <ChevronRight size={16} />
                                         </button>
                                     </div>
                                 </div>
@@ -231,11 +390,16 @@ const Curriculum = () => {
                     {filtered.length === 0 && (
                         <div className="text-center py-20 text-slate-400">
                             <Search size={48} className="mx-auto mb-4 text-slate-200" />
-                            <p className="font-semibold text-lg">No results found for "{search}"</p>
+                            <p className="font-semibold text-lg">No results for "{search}"</p>
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* Exploration Map Modal */}
+            {explorationItem && (
+                <ExplorationModal item={explorationItem} onClose={() => setExplorationItem(null)} />
+            )}
         </div>
     );
 };

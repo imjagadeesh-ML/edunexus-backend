@@ -34,3 +34,22 @@ def get_student_placement(student_id: int, db: Session = Depends(get_db)):
     if db_placement is None:
         raise HTTPException(status_code=404, detail="Placement prediction not found")
     return db_placement
+@router.get("/{student_id}/dashboard-summary")
+def get_dashboard_summary(student_id: int, db: Session = Depends(get_db)):
+    student = crud.get_student(db, student_id=student_id)
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    readiness = crud.get_readiness_score(db, student_id=student_id)
+    placement = crud.get_placement_prediction(db, student_id=student_id)
+    
+    return {
+        "student": {
+            "id": student.id,
+            "name": student.name,
+            "roll_number": student.roll_number,
+            "email": student.email
+        },
+        "readiness": readiness,
+        "placement": placement
+    }

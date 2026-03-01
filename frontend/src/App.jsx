@@ -9,9 +9,11 @@ import Predictions from './pages/Predictions';
 import BurnoutAlerts from './pages/BurnoutAlerts';
 import FacultyReports from './pages/FacultyReports';
 
+import SplashScreen from './components/SplashScreen';
+
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (loading) return <SplashScreen />;
   if (!user) return <Navigate to="/login" />;
   return children;
 };

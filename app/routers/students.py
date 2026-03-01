@@ -7,6 +7,13 @@ from app.database import get_db
 
 router = APIRouter()
 
+@router.post("/", response_model=schemas.StudentOut)
+def create_student(student: schemas.StudentCreate, db: Session = Depends(get_db)):
+    db_student = crud.get_student_by_email(db, email=student.email)
+    if db_student:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    return crud.create_student(db=db, student=student)
+
 @router.get("/subjects", response_model=List[schemas.SubjectOut])
 def read_subjects(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     subjects = crud.get_subjects(db, skip=skip, limit=limit)

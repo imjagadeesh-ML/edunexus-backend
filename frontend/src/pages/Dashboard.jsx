@@ -30,12 +30,22 @@ const ALL_SKILLS = [
 
 const DEFAULT_SELECTED = new Set(['ds', 'python', 'ml', 'cloud', 'dbms']);
 
+// Role-to-Skill Requirement Mapping for dynamic insights
+const ROLE_REQUIREMENTS = {
+    'Full Stack Engineer': ['ds', 'python', 'sql', 'api', 'oop'],
+    'Data Scientist': ['python', 'ml', 'sql', 'dbms', 'ai'],
+    'DevOps Engineer': ['cloud', 'docker', 'api', 'sql'],
+    'AI Researcher': ['ml', 'ai', 'python', 'algo', 'ds'],
+    'Backend Developer': ['ds', 'dbms', 'api', 'python', 'sql']
+};
+
 const Dashboard = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedSkills, setSelectedSkills] = useState(DEFAULT_SELECTED);
+    const [skillSearch, setSkillSearch] = useState('');
 
     const toggleSkill = (key) => {
         setSelectedSkills(prev => {
@@ -54,6 +64,30 @@ const Dashboard = () => {
     const radarData = ALL_SKILLS
         .filter(s => selectedSkills.has(s.key))
         .map(s => ({ subject: s.label, A: s.score, fullMark: 100 }));
+
+    // Dynamic career fit calculation based on selected skills
+    const calculateBestFit = () => {
+        let bestRole = "Searching...";
+        let maxMatch = -1;
+
+        Object.entries(ROLE_REQUIREMENTS).forEach(([role, reqs]) => {
+            const intersection = reqs.filter(r => selectedSkills.has(r));
+            const matchScore = (intersection.length / reqs.length) * 100;
+
+            if (matchScore > maxMatch) {
+                maxMatch = matchScore;
+                bestRole = role;
+            }
+        });
+
+        return { role: bestRole, score: Math.round(maxMatch) };
+    };
+
+    const bestFit = calculateBestFit();
+
+    const filteredSkillsForSearch = ALL_SKILLS.filter(s =>
+        s.label.toLowerCase().includes(skillSearch.toLowerCase())
+    );
 
     useEffect(() => {
         if (!user?.id) return;
@@ -168,24 +202,36 @@ const Dashboard = () => {
                             <span className="text-xs font-bold text-primary-600 bg-primary-50 px-3 py-1 rounded-full uppercase tracking-widest">Live</span>
                         </div>
 
-                        {/* Skill Selector Pills */}
+                        {/* Skill Selector with Search */}
                         <div className="mb-4">
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
-                                <Settings size={12} /> Select skills to display (3–8)
-                            </p>
-                            <div className="flex flex-wrap gap-1.5">
-                                {ALL_SKILLS.map(s => (
+                            <div className="flex justify-between items-center mb-2">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                                    <Settings size={12} /> Select skills (3–8)
+                                </p>
+                                <input
+                                    type="text"
+                                    placeholder="Search skills..."
+                                    value={skillSearch}
+                                    onChange={(e) => setSkillSearch(e.target.value)}
+                                    className="text-[10px] font-bold border-b border-slate-200 focus:border-primary-500 outline-none bg-transparent px-1 py-0.5 w-24 text-slate-600"
+                                />
+                            </div>
+                            <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1">
+                                {filteredSkillsForSearch.map(s => (
                                     <button
                                         key={s.key}
                                         onClick={() => toggleSkill(s.key)}
                                         className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all border ${selectedSkills.has(s.key)
                                             ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
-                                            : 'bg-white text-slate-500 border-slate-200 hover:border-primary-300 hover:text-primary-600'
+                                            : 'bg-white text-slate-400 border-slate-200 hover:border-primary-300 hover:text-primary-600'
                                             }`}
                                     >
                                         {s.label}{selectedSkills.has(s.key) && <span className="ml-1 opacity-80">✓</span>}
                                     </button>
                                 ))}
+                                {filteredSkillsForSearch.length === 0 && (
+                                    <p className="text-[10px] text-slate-400 italic py-1">No matching skills found</p>
+                                )}
                             </div>
                         </div>
 
@@ -217,11 +263,11 @@ const Dashboard = () => {
                                 <span className="text-emerald-400 font-bold uppercase tracking-widest text-sm">Career Trajectory</span>
                             </div>
                             <h2 className="text-3xl font-bold mb-6 leading-tight">
-                                Insight: <span className="text-emerald-400">Full Stack</span> Fit Candidate
+                                Insight: <span className="text-emerald-400">{bestFit.role}</span> Fit Candidate
                             </h2>
                             <p className="text-slate-400 text-lg mb-8 leading-relaxed font-medium">
-                                {stats?.placement?.suggestions ||
-                                    'Run a Predictions analysis to get your personalised career path insights.'}
+                                Based on your selected skill profile, you have a <span className="text-white font-bold">{bestFit.score}%</span> alignment with <span className="text-emerald-400">{bestFit.role}</span> roles.
+                                {bestFit.score < 60 ? " Consider adding more core skills to boost your match!" : " You're on the right track for this career path!"}
                             </p>
                             <div className="flex gap-4">
                                 <button

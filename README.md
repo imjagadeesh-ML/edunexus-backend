@@ -117,4 +117,4 @@ The project is pre-configured for one-click deployment:
 ---
 
 ## 📄 License
-This project is open source and available under the [MIT License](LICENSE).
+Copyright © 2026 Jagadeesh. All rights reserved.

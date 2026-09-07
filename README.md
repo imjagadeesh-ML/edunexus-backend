@@ -28,37 +28,7 @@ EduNexus is an intelligent higher education platform designed for engineering in
 
 ---
 
-## 📁 Project Structure
 
-```text
-edunexus/
-├── app/
-│   ├── core/           # Security, JWT, and application configuration
-│   ├── routers/        # API routers (auth, students, predictions, collaboration)
-│   ├── services/       # Analytics engines (placement, burnout, scoring, reports, roadmap)
-│   ├── scripts/        # Database seeding utilities
-│   ├── database.py     # SQLAlchemy DB engine (dual SQLite / PostgreSQL support)
-│   ├── models.py       # Database schema models
-│   ├── schemas.py      # Pydantic request / response schemas
-│   ├── crud.py         # Database query operations
-│   └── main.py         # FastAPI application entry point
-├── frontend/
-│   ├── src/
-│   │   ├── api/        # Axios client with JWT interceptor
-│   │   ├── components/ # Reusable UI components
-│   │   ├── context/    # Auth context & state management
-│   │   ├── pages/      # Application views (Dashboard, Curriculum, Predictions, etc.)
-│   │   ├── App.jsx     # Route declarations
-│   │   └── main.jsx    # React DOM root
-│   ├── package.json
-│   └── vite.config.js
-├── DEPLOYMENT.md       # Render + Supabase cloud deployment guide
-├── requirements.txt    # Python backend dependencies
-├── run.py              # Backend local development runner
-└── render.yaml         # Render deployment blueprint
-```
-
----
 
 ## ⚡ Getting Started
 

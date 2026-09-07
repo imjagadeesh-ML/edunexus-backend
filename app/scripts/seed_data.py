@@ -16,8 +16,7 @@ def seed_db():
     try:
         # 1. Clear existing data (optional, but good for a fresh start)
         # Note: In production you'd be careful here.
-        # Base.metadata.drop_all(bind=engine)
-        # Base.metadata.create_all(bind=engine)
+        Base.metadata.create_all(bind=engine)
 
         print("Seeding subjects...")
         subjects_data = [

@@ -53,3 +53,9 @@ venv.bak/
 
 # Render deployment
 # We DO want requirements.txt, and DEPLOYMENT.md
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+

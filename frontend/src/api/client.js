@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const client = axios.create({
-    baseURL: 'https://edunexus-backend-f3n5.onrender.com/api/v1',
+    baseURL: 'http://localhost:8000/api/v1',
     headers: {
         'Content-Type': 'application/json',
     },
